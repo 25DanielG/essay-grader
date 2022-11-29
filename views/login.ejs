@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href= "/assets/login.css" rel="stylesheet" type="text/css" />
+    <title>Essay Grader Login</title>
+</head>
+<body>
+    <div class="topbar">
+        <h2 class="label">Essay Grader</h2>
+    </div>
+    <header>
+        <%- include('./partials/header'); %>
+    </header>
+    <div class="login-page">
+        <div class="login-form">
+            <input type="text" placeholder="username" id="user_field"/>
+            <h5 id="field_error" style="color: red; margin: 10px;" hidden>This is a required field</h5>
+            <form action="http://localhost:2020/teacher">
+                <button class="teacher" id="to_portal" >I Am A Teacher</button>
+            </form>
+            <pre></pre>
+            <button class="login" id="login_button" onclick="loginStudent()">Login</button>
+        </div>
+    </div>
+    <script>
+        function loginStudent() {
+            let name = document.getElementById('user_field');
+            if(name.value == '') {
+                document.getElementById('field_error').removeAttribute('hidden');
+                return;
+            }
+            let link = `http://localhost:2020/student?name="${name.value}"`;
+            window.location.replace(link);
+        }
+    </script>
+</body>
+</html>
