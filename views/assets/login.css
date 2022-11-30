@@ -1,29 +1,12 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-.topbar {
-    background-color: #333;
-    position: absolute;
-}
-.topbar h2 {
-    float: left;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-    margin: auto;
-    letter-spacing: 1px;
-}
-.topbar h2.label {
-    background-color: #04AA6D;
-    color: white;
-}
 .login-page {
     width: 360px;
     padding: 8% 0 0;
     margin: auto;
 }
 .login-form {
+    border-radius: 25px;
     position: relative;
     z-index: 1;
     background: #FFFFFF;
@@ -98,7 +81,7 @@
     color: #EF3B3A;
 }
 body {
-    background: #76b852; /* fallback for old browsers */
+    background: #76b852;
     background: rgb(141,194,111);
     background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
     font-family: "Roboto", sans-serif;

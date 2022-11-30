@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Portal</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/teacher.css" rel="stylesheet" type="text/css" />
+    <title>Document</title>
 </head>
+
 <body>
-    
+    <header>
+        <%- include('./partials/header'); %>
+    </header>
+    <div class="back">
+        <div class="front">
+            <div class="label">
+                <h2 class="teacher_writing">Teacher Portal</h2>
+            </div>
+            <div class="list">
+            </div>
+        </div>
+    </div>
+    <script>
+        function addListOption() {
+            let list_div = document.querySelector('.list');
+            list_div.innerHTML = list_div.innerHTML + ''
+                + '<a href="google.com">'
+                + '    <div class="list_item">'
+                + ''
+                + '    </div>'
+                + '</a>'
+            ;
+        }
+    </script>
 </body>
 </html>

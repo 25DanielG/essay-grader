@@ -1,2 +1,57 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
+.back {
+    width: 1350px;
+    height: 615px;
+    padding: 8% 0 0;
+    margin: auto;
+    border-radius: 25px;
+
+}
+.front {
+    background-color: white;
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    width: 1250px;
+    height: 565px;
+    border-radius: 25px;
+}
+div.list {
+    background: white;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.list_item {
+    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    overflow: hidden;
+    margin: 15px;
+    width: 148px;
+    height: 115px;
+    border-radius: 25px;
+    float: left;
+}
+.teacher_writing {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #328bea;
+    width: 100%;
+    border: 10px;
+    margin: 0 0 10px;
+    padding: 10px;
+    box-sizing: inherit;
+    font-size: 17px;
+    text-align: center;
+    text-shadow: #76b852
+}
+body {
+    background: #76b852;
+    background: rgb(141,194,111);
+    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
