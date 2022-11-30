@@ -12,18 +12,23 @@
     background-color: white;
     position: relative;
     margin: auto;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     width: 1250px;
     height: 565px;
     border-radius: 25px;
 }
-div.list {
+.front::-webkit-scrollbar {
+    display: none;
+}
+.list {
     background: white;
     overflow-x: hidden;
     overflow-y: scroll;
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    outline: black;
 }
 .list_item {
     background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
@@ -33,6 +38,8 @@ div.list {
     height: 115px;
     border-radius: 25px;
     float: left;
+    outline: black;
+    outline-width: 3px;
 }
 .teacher_writing {
     font-family: "Roboto", sans-serif;
@@ -52,6 +59,7 @@ body {
     background: rgb(141,194,111);
     background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
     font-family: "Roboto", sans-serif;
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
