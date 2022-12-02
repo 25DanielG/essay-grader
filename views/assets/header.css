@@ -1,20 +1,30 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-.topbar {
+.topnav {
     background-color: #333;
-    position: absolute;
+    overflow: hidden;
+    margin: 0;
+    border-radius: 25px;
 }
-.topbar h2 {
+  
+  /* Style the links inside the navigation bar */
+.topnav a {
     float: left;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
-    margin: auto;
-    letter-spacing: 1px;
 }
-.topbar h2.label {
-    background-color: #04AA6D;
+  
+  /* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+  
+  /* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #2d7ed4;
     color: white;
 }

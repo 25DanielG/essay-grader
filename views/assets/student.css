@@ -1,2 +1,45 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
+.back {
+    width: 1350px;
+    height: 615px;
+    padding: 8% 0 0;
+    border-radius: 25px;
+    margin: auto;
+}
+.back_centered {
+    width: 750px;
+    height: 615px;
+    padding: 8% 0 0;
+    border-radius: 25px;
+    margin: auto;
+}
+.front {
+    background-color: white;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 575px;
+    height: 615px;
+    border-radius: 25px;
+    float: left;
+    top: auto;
+}
+.sidebar {
+    background-color: #2d7ed4;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 175px;
+    height: 615px;
+    border-radius: 25px;
+    float: left;
+    top: auto;
+}
+body {
+    background: #76b852;
+    background: rgb(141,194,111);
+    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    font-family: "Roboto", sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
