@@ -8,7 +8,7 @@
     border-radius: 25px;
 }
 .front {
-    background-color: white;
+    background-color: #333;
     position: relative;
     margin: auto;
     overflow-x: hidden;
@@ -22,7 +22,7 @@
     display: none;
 }
 .list {
-    background: white;
+    background: #333;
     overflow-x: hidden;
     overflow-y: scroll;
     font-family: "Roboto", sans-serif;

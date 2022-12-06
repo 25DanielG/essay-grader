@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "ES2020",
+      "noImplicitAny": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "node_modules"  
+    ]
+}

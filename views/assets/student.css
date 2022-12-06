@@ -1,21 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-.back {
-    width: 1350px;
-    height: 615px;
-    padding: 8% 0 0;
-    border-radius: 25px;
-    margin: auto;
-}
 .back_centered {
     width: 750px;
     height: 615px;
     padding: 8% 0 0;
     border-radius: 25px;
     margin: auto;
+    position: absolute;
+    top: -20px;
+    justify-self: center;
 }
 .front {
-    background-color: white;
+    background-color: #333;
     overflow-x: hidden;
     overflow-y: scroll;
     width: 575px;
@@ -23,6 +19,13 @@
     border-radius: 25px;
     float: left;
     top: auto;
+    margin: 0px;
+    position: relative;
+}
+.front input {
+    margin: auto;
+    height: 600px;
+    width: 560px;
 }
 .sidebar {
     background-color: #2d7ed4;
@@ -33,11 +36,12 @@
     border-radius: 25px;
     float: left;
     top: auto;
+    position: relative;
 }
 body {
     background: #76b852;
     background: rgb(141,194,111);
-    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    background: linear-gradient(90deg,#c850c0,#4158d0);
     font-family: "Roboto", sans-serif;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
