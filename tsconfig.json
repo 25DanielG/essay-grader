@@ -6,7 +6,8 @@
       "preserveConstEnums": true,
       "sourceMap": true,
       "moduleResolution": "node",
-      "allowSyntheticDefaultImports": true
+      "allowSyntheticDefaultImports": true,
+      "outDir": "out"
     },
     "exclude": [
         "node_modules"  
