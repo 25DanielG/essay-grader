@@ -89,8 +89,6 @@
     color: #EF3B3A;
 }
 body {
-    background: #76b852;
-    background: rgb(141,194,111);
     background: linear-gradient(90deg,#c850c0,#4158d0);
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;

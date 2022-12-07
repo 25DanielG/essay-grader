@@ -1,18 +1,16 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import path from 'path';
 
 var app = express();
 const port = 2020;
-var __dirname;
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(express.static('views'));
 
 mongoose.connect('mongodb://localhost:2021');
-var Schema = mongoose.Schema;
 
-var usrSchema = new Schema({
+var usrSchema = new mongoose.Schema({
     name: {type: String, required: true},
     content: {type: String, required: true},
     created: {type: Number, required: true},
