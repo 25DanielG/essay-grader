@@ -6,8 +6,8 @@
     padding: 8% 0 0;
     border-radius: 25px;
     margin: auto;
-    position: absolute;
-    top: -20px;
+    position: relative;
+    top: -50px;
     justify-self: center;
 }
 .text_container {

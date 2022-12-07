@@ -11,6 +11,7 @@
     z-index: 1;
     background: #333;
     max-width: 720px;
+    cursor: pointer;
     margin: 0 auto 100px;
     padding: 45px;
     text-align: center;
