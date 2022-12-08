@@ -70,7 +70,7 @@
     transition-duration: 0.8s;
     background-position: center;
 }
-.sidebar form {
+.submit_button {
     padding: 10px;
 }
 .sidebar button:hover {

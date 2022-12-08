@@ -36,16 +36,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import express from 'express';
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import { gradeEssay } from './grades.js';
 var app = express();
 var port = 2020;
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static('views'));
-mongoose.connect('mongodb://localhost:2021');
+mongoose.connect('mongodb://localhost:27017');
 var usrSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    content: { type: String, required: true },
-    created: { type: Number, required: true },
+    name: String,
+    content: String,
+    created: Number,
     grade: Number,
     incorrect: String,
     comments: String
@@ -74,9 +78,12 @@ app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 
 app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var grade, newEssay, essay;
     return __generator(this, function (_a) {
+        console.log("Inside server student post");
         grade = gradeEssay(req.body.content);
         newEssay = Object.assign(req.body, {
-            creationTime: new Date(),
+            name: req.body.name,
+            content: req.body.content,
+            created: new Date(),
             grade: grade
         });
         essay = new UserEssay(newEssay);
@@ -85,7 +92,6 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
         })["catch"](function (err) {
             console.log("Error while saving essay:" + err);
         });
-        res.redirect('/view');
         return [2];
     });
 }); });

@@ -14,18 +14,28 @@
     </header>
     <div class="back_centered">
         <div class="text_container">
-            <div class="sidebar">
-                <form action="" method="post" class="submit_button">
-                    <button type="button">Submit</button>
-                </form>
-            </div>
-            <div class="front">
-                <textarea class="scroll" type="text"></textarea>
-            </div>
+            <form class="submission" method="post" action="/student">
+                <div class="sidebar">
+                    <div class="submit_button">
+                        <button type="button" onclick="submitClicked()">Submit</button>
+                    </div>
+                </div>
+                <div class="front">
+                    <textarea class="scroll" type="text"></textarea>
+                </div>
+            </form>
         </div>
     </div>
     <script>
-
+        function submitClicked() {
+            console.log("Sumbit button clicked");
+            let essay = document.querySelector('.scroll').value;
+            let url = window.location.href;
+            let name = url.split('name=')[1];
+            if(essay.trim() == "" || name.trime() == "")
+                return;
+            document.querySelector('.submission').submit();
+        }
     </script>
 </body>
 </html>

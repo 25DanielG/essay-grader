@@ -1,3 +1,3 @@
-function gradeEssay(essay: String) {
+export function gradeEssay(essay: String) {
     return 50;
 }

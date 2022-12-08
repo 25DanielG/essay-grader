@@ -1,19 +1,26 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import { gradeEssay } from './grades.js';
 
 var app = express();
 const port = 2020;
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static('views'));
 
-mongoose.connect('mongodb://localhost:2021');
+mongoose.connect('mongodb://localhost:27017');
 
 var usrSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    content: {type: String, required: true},
-    created: {type: Number, required: true},
+    //name: {type: String, required: true},
+    //content: {type: String, required: true},
+    //created: {type: Number, required: true},
+    name: String,
+    content: String,
+    created: Number,
     grade: Number,
     incorrect: String,
     comments: String
@@ -26,9 +33,6 @@ app.get('/', async(req: any, res: any) => {
 });
 
 app.get('/teacher', async(req: any, res: any) => {
-    /*UserEssay.find().then(function(essays) {
-        res.render('teacher', {items: essays});
-    });*/
     let submissions = UserEssay.find();
     res.render("teacher", submissions);
 }); 
@@ -38,9 +42,12 @@ app.get('/student', async(req: any, res: any) => {
 });
 
 app.post('/student', async(req: any, res: any) => {
+    console.log("Inside server student post");
     let grade = gradeEssay(req.body.content);
     let newEssay = Object.assign(req.body, {
-        creationTime: new Date(),
+        name: req.body.name,
+        content: req.body.content,
+        created: new Date(),
         grade: grade
     });
     let essay = new UserEssay(newEssay);
@@ -49,7 +56,7 @@ app.post('/student', async(req: any, res: any) => {
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    res.redirect('/view');
+    //res.redirect('/view');
 });
 
 app.listen(port, () => {
