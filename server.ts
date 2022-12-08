@@ -1,6 +1,5 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 import { gradeEssay } from './grades.js';
 
 var app = express();
@@ -8,40 +7,37 @@ const port = 2020;
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
 
-mongoose.connect('mongodb://localhost:27017');
+mongoose.connect('mongodb://localhost:27017/submissions');
 
 var usrSchema = new mongoose.Schema({
-    //name: {type: String, required: true},
-    //content: {type: String, required: true},
-    //created: {type: Number, required: true},
-    name: String,
-    content: String,
-    created: Number,
+    name: {type: String, required: true},
+    content: {type: String, required: true},
+    created: {type: Number, required: true},
     grade: Number,
     incorrect: String,
     comments: String
 });
-
 var UserEssay = mongoose.model('UserEssay', usrSchema); 
 
-app.get('/', async(req: any, res: any) => {
+app.get('/', async(req, res) => {
     res.render('login');
+    // await UserEssay.deleteMany({});
 });
 
-app.get('/teacher', async(req: any, res: any) => {
-    let submissions = UserEssay.find();
-    res.render("teacher", submissions);
+app.get('/teacher', async(req, res) => {
+    let sub = await UserEssay.find();
+    res.render("teacher", { submissions: sub });
 }); 
 
-app.get('/student', async(req: any, res: any) => {
+app.get('/student', async(req, res) => {
     res.render('student');
 });
 
-app.post('/student', async(req: any, res: any) => {
+app.post('/student', async(req, res) => {
     console.log("Inside server student post");
     let grade = gradeEssay(req.body.content);
     let newEssay = Object.assign(req.body, {
@@ -56,7 +52,7 @@ app.post('/student', async(req: any, res: any) => {
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    //res.redirect('/view');
+    res.redirect('/view/');
 });
 
 app.listen(port, () => {

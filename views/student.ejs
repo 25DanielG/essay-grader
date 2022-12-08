@@ -16,12 +16,13 @@
         <div class="text_container">
             <form class="submission" method="post" action="/student">
                 <div class="sidebar">
+                    <input type="text" name="name" class="name" style="display: none;"></input>
                     <div class="submit_button">
-                        <button type="button" onclick="submitClicked()">Submit</button>
+                        <button tpye="submit">Submit</button>
                     </div>
                 </div>
                 <div class="front">
-                    <textarea class="scroll" type="text"></textarea>
+                    <textarea name="content" class="scroll" type="text"></textarea>
                 </div>
             </form>
         </div>
@@ -30,11 +31,16 @@
         function submitClicked() {
             console.log("Sumbit button clicked");
             let essay = document.querySelector('.scroll').value;
-            let url = window.location.href;
-            let name = url.split('name=')[1];
-            if(essay.trim() == "" || name.trime() == "")
+            let name = document.querySelector('.name').value;
+            if(essay.trim() == "" || name.trim() == "")
                 return;
             document.querySelector('.submission').submit();
+        }
+        window.onload = function placeName() {
+            let url = window.location.href;
+            let name = url.split('name=')[1];
+            name = name.replaceAll('%22', '');
+            document.querySelector('.name').value = name;
         }
     </script>
 </body>

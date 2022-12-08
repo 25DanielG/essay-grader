@@ -23,14 +23,12 @@
     display: none;
 }
 .list {
-    background: #333;
+    background: transparent;
     overflow-x: hidden;
     overflow-y: scroll;
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    outline: black;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 .list_item {
     background: linear-gradient(90deg,#c850c0,#4158d0);
@@ -43,6 +41,7 @@
     outline: black;
     outline-width: 3px;
     transition: all .2s ease-in-out;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 .list_item h2 {
     font-family: "Roboto", sans-serif;
@@ -54,7 +53,7 @@
     box-sizing: inherit;
     font-size: 14px;
     text-align: center;
-}  
+}
 .list_item:hover { 
     transform: scale(1.1); 
 }

@@ -36,20 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import express from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 import { gradeEssay } from './grades.js';
 var app = express();
 var port = 2020;
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
-mongoose.connect('mongodb://localhost:27017');
+mongoose.connect('mongodb://localhost:27017/submissions');
 var usrSchema = new mongoose.Schema({
-    name: String,
-    content: String,
-    created: Number,
+    name: { type: String, required: true },
+    content: { type: String, required: true },
+    created: { type: Number, required: true },
     grade: Number,
     incorrect: String,
     comments: String
@@ -62,11 +61,15 @@ app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); });
 app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var submissions;
+    var sub;
     return __generator(this, function (_a) {
-        submissions = UserEssay.find();
-        res.render("teacher", submissions);
-        return [2];
+        switch (_a.label) {
+            case 0: return [4, UserEssay.find()];
+            case 1:
+                sub = _a.sent();
+                res.render("teacher", { submissions: sub });
+                return [2];
+        }
     });
 }); });
 app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -92,6 +95,7 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
         })["catch"](function (err) {
             console.log("Error while saving essay:" + err);
         });
+        res.redirect('/view/');
         return [2];
     });
 }); });
