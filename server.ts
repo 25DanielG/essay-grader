@@ -35,10 +35,9 @@ app.get('/teacher', async(req, res) => {
 
 app.post('/teacher', async(req, res) => {
     try {
-        console.log("Trying to find essay by id: " + req.body.essayId);
-        let found_essay = await UserEssay.findById(req.body.essayId);
+        let found_essay = await UserEssay.findById(req.body.essay_id);
         if(found_essay)
-            res.render(`view/${req.body.essayId}`, { submissions: found_essay });
+            res.redirect(`/view` + `?id="${req.body._id}"`);
         else
             res.sendStatus(404);
     } catch (err) {
@@ -50,8 +49,8 @@ app.get('/student', async(req, res) => {
     res.render('student');
 });
 
-app.get('/view/:essayId', async(req, res) => {
-    res.render('view');
+app.get('/view', async(req, res) => {
+    res.render('view', { id: req.query.id });
 });
 
 app.post('/student', async(req, res) => {
@@ -69,7 +68,7 @@ app.post('/student', async(req, res) => {
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    res.redirect('/view/');
+    res.redirect(`/view` + `?id="${req.body._id}"`);
 });
 
 app.listen(port, () => {

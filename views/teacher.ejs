@@ -19,9 +19,9 @@
                 <h2 class="teacher_writing">Teacher Portal</h2>
             </div>
             <div class="list" onload="addEssays()">
-                <% submissions.forEach(function(essay) { %>
+                <% submissions.forEach((essay) => { %>
                     <form class="redirect_view_<%= essay._id %>" method="post">
-                        <input name="essayId" type="text" style="display: none;" value="<%=essay._id%>">
+                        <input name="essay_id" type="text" style="display: none;" value="<%=essay._id%>">
                         <a class="list_item_a">
                             <div class="list_item" onclick="redirectToView('<%-essay._id%>')">
                                 <h2> <%= essay.name %> </h2>
@@ -62,7 +62,6 @@
             for(let i = 0; i < list_items.length; ++i) {
                 let rand = Math.floor(Math.random() * 6);
                 list_items[i].setAttribute("style", `background-image: url("${urls[rand]}");`);
-                // list_items[i].children[0].innerHTML = <% submissions %>
             }
         }
     </script>

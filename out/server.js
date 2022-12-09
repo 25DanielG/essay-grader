@@ -73,25 +73,33 @@ app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); });
 app.post('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var found_essay, err_1;
+    var essays, found_essay, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 3, , 4]);
                 console.log("Trying to find essay by id: " + req.body.essayId);
-                return [4, UserEssay.findById(req.body.essayId)];
+                return [4, UserEssay.find()];
             case 1:
+                essays = _a.sent();
+                essays.forEach(function (essay) {
+                    console.log(essay.name + ", id: " + essay._id);
+                });
+                return [4, UserEssay.findById(req.body.essayId)];
+            case 2:
                 found_essay = _a.sent();
-                if (found_essay)
+                if (found_essay) {
+                    console.log("Found the essay!");
                     res.render("view/".concat(req.body.essayId), { submissions: found_essay });
+                }
                 else
                     res.sendStatus(404);
-                return [3, 3];
-            case 2:
+                return [3, 4];
+            case 3:
                 err_1 = _a.sent();
                 console.log("Error while finding the essay: " + err_1);
-                return [3, 3];
-            case 3: return [2];
+                return [3, 4];
+            case 4: return [2];
         }
     });
 }); });
