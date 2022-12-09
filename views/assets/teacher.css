@@ -47,11 +47,12 @@
     font-family: "Roboto", sans-serif;
     outline: 0;
     width: 90%;
+    color: #333;
     border: 10px;
-    margin: 0 0 10px;
+    margin: auto;
     padding: 10px;
     box-sizing: inherit;
-    font-size: 14px;
+    font-size: 18px;
     text-align: center;
 }
 .list_item:hover { 

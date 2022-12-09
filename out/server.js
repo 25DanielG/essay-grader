@@ -72,9 +72,38 @@ app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
+app.post('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var found_essay, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                console.log("Trying to find essay by id: " + req.body.essayId);
+                return [4, UserEssay.findById(req.body.essayId)];
+            case 1:
+                found_essay = _a.sent();
+                if (found_essay)
+                    res.render("view/".concat(req.body.essayId), { submissions: found_essay });
+                else
+                    res.sendStatus(404);
+                return [3, 3];
+            case 2:
+                err_1 = _a.sent();
+                console.log("Error while finding the essay: " + err_1);
+                return [3, 3];
+            case 3: return [2];
+        }
+    });
+}); });
 app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         res.render('student');
+        return [2];
+    });
+}); });
+app.get('/view/:essayId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.render('view');
         return [2];
     });
 }); });

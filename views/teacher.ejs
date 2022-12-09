@@ -20,11 +20,14 @@
             </div>
             <div class="list" onload="addEssays()">
                 <% submissions.forEach(function(essay) { %>
-                    <a href="google.com">
-                        <div class="list_item">
-                            <h2>Temp Essay Text</h2>
-                        </div>
-                    </a>
+                    <form class="redirect_view_<%= essay._id %>" method="post">
+                        <input name="essayId" type="text" style="display: none;" value="<%=essay._id%>">
+                        <a class="list_item_a">
+                            <div class="list_item" onclick="redirectToView('<%-essay._id%>')">
+                                <h2> <%= essay.name %> </h2>
+                            </div>
+                        </a>
+                    </form>
                 <% }); %>
             </div>
         </div>
@@ -40,6 +43,12 @@
                 + '</a>'
             ;
         }
+        function redirectToView(id) {
+            if(id.trim() == '')
+                return;
+            let class_name = "redirect_view_" + id;
+            document.querySelector(`.${class_name}`).submit();
+        }
         let urls = [
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLxRRIURDV86yBaVi9kisZGHwcWZCS4b3Ag6syP40wfwtKk4E7nsrQWEG4HybVqGiXojw&usqp=CAU",
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2hCLvVylio3q1EiP1fMwm_hWMj_K_ceqUVT-QvLmaUxaMQtKQ7171AxqHhIGCA2bTXbw&usqp=CAU",
@@ -53,6 +62,7 @@
             for(let i = 0; i < list_items.length; ++i) {
                 let rand = Math.floor(Math.random() * 6);
                 list_items[i].setAttribute("style", `background-image: url("${urls[rand]}");`);
+                // list_items[i].children[0].innerHTML = <% submissions %>
             }
         }
     </script>

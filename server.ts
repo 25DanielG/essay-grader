@@ -31,10 +31,27 @@ app.get('/', async(req, res) => {
 app.get('/teacher', async(req, res) => {
     let sub = await UserEssay.find();
     res.render("teacher", { submissions: sub });
-}); 
+});
+
+app.post('/teacher', async(req, res) => {
+    try {
+        console.log("Trying to find essay by id: " + req.body.essayId);
+        let found_essay = await UserEssay.findById(req.body.essayId);
+        if(found_essay)
+            res.render(`view/${req.body.essayId}`, { submissions: found_essay });
+        else
+            res.sendStatus(404);
+    } catch (err) {
+        console.log("Error while finding the essay: " + err);
+    }
+});
 
 app.get('/student', async(req, res) => {
     res.render('student');
+});
+
+app.get('/view/:essayId', async(req, res) => {
+    res.render('view');
 });
 
 app.post('/student', async(req, res) => {
