@@ -66,11 +66,12 @@ app.post('/student', async(req, res) => {
         grade: grade
     });
     let essay = new UserEssay(newEssay);
-    essay.save().then((result: any) =>{
-        res.redirect(`/view` + `?id=${req.body._id}`);
+    await essay.save().then((result: any) =>{
+        console.log("Saved the essay");
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
+    res.redirect(`/view` + `?id=${essay._id}`);
 });
 
 app.listen(port, () => {

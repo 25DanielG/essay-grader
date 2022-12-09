@@ -112,21 +112,27 @@ app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, 
 app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var grade, newEssay, essay;
     return __generator(this, function (_a) {
-        console.log("Inside server student post");
-        grade = gradeEssay(req.body.content);
-        newEssay = Object.assign(req.body, {
-            name: req.body.name,
-            content: req.body.content,
-            created: new Date(),
-            grade: grade
-        });
-        essay = new UserEssay(newEssay);
-        essay.save().then(function (result) {
-            res.redirect("/view" + "?id=".concat(req.body._id));
-        })["catch"](function (err) {
-            console.log("Error while saving essay:" + err);
-        });
-        return [2];
+        switch (_a.label) {
+            case 0:
+                console.log("Inside server student post");
+                grade = gradeEssay(req.body.content);
+                newEssay = Object.assign(req.body, {
+                    name: req.body.name,
+                    content: req.body.content,
+                    created: new Date(),
+                    grade: grade
+                });
+                essay = new UserEssay(newEssay);
+                return [4, essay.save().then(function (result) {
+                        console.log("Saved the essay");
+                    })["catch"](function (err) {
+                        console.log("Error while saving essay:" + err);
+                    })];
+            case 1:
+                _a.sent();
+                res.redirect("/view" + "?id=".concat(essay._id));
+                return [2];
+        }
     });
 }); });
 app.listen(port, function () {
