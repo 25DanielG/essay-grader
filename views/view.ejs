@@ -13,6 +13,15 @@
     <header>
         <%- include('./partials/header'); %>
     </header>
+    <div class="back_centered">
+        <div class="text_container">
+            <form class="submission" method="post" action="/student">
+                <div class="front">
+                    <textarea name="content" class="scroll" type="text" disabled><%=essay.content%></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
     </script>
 </body>

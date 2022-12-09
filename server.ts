@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
 
 var app = express();
@@ -34,15 +34,10 @@ app.get('/teacher', async(req, res) => {
 });
 
 app.post('/teacher', async(req, res) => {
-    try {
-        let found_essay = await UserEssay.findById(req.body.essay_id);
-        if(found_essay)
-            res.redirect(`/view` + `?id="${req.body._id}"`);
-        else
-            res.sendStatus(404);
-    } catch (err) {
-        console.log("Error while finding the essay: " + err);
-    }
+    if(isValidObjectId(req.body.essay_id))
+        res.redirect(`/view` + `?id=${req.body.essay_id}`);
+    else
+        res.sendStatus(502);
 });
 
 app.get('/student', async(req, res) => {
@@ -50,7 +45,15 @@ app.get('/student', async(req, res) => {
 });
 
 app.get('/view', async(req, res) => {
-    res.render('view', { id: req.query.id });
+    try {
+        let found_essay = await UserEssay.findById(req.query.id);
+        if(found_essay)
+            res.render('view', { essay: found_essay });
+        else
+            res.sendStatus(404);
+    } catch (err) {
+        console.log("Error while finding the essay to display: " + err);
+    }
 });
 
 app.post('/student', async(req, res) => {
@@ -64,13 +67,12 @@ app.post('/student', async(req, res) => {
     });
     let essay = new UserEssay(newEssay);
     essay.save().then((result: any) =>{
-        res.send(result);
+        res.redirect(`/view` + `?id=${req.body._id}`);
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    res.redirect(`/view` + `?id="${req.body._id}"`);
 });
 
 app.listen(port, () => {
     console.log(`Listening on port: ${port}`); 
-})
+});
