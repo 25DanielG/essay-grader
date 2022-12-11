@@ -11,10 +11,13 @@
 
 <body>
     <header>
-        <%- include('./partials/header'); %>
+        <%- include('./partials/view_header'); %>
     </header>
     <div class="back_centered">
         <div class="text_container">
+            <form class="essay_del" method="post" action="/view">
+                <input type="text" name="id" class="id" style="display: none;"></input>
+            </form>
             <form class="submission">
                 <div class="front">
                     <div class="text_div">
@@ -36,6 +39,15 @@
         </div>
     </div>
     <script>
+        document.querySelector('.del').addEventListener('click', () => {
+            document.querySelector('.essay_del').submit();
+        });
+        window.onload = () => {
+            let url = window.location.href;
+            let id = url.split('id=')[1];
+            id = id.replaceAll('%22', '');
+            document.querySelector('.id').value = id;
+        };
     </script>
 </body>
 </html>

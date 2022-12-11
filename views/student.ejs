@@ -18,7 +18,7 @@
                 <div class="sidebar">
                     <input type="text" name="name" class="name" style="display: none;"></input>
                     <div class="submit_button">
-                        <button tpye="submit">Submit</button>
+                        <a onclick="submitClicked()">Submit</a>
                     </div>
                 </div>
                 <div class="front">
@@ -35,12 +35,12 @@
                 return;
             document.querySelector('.submission').submit();
         }
-        window.onload = function placeName() {
+        window.onload = () => {
             let url = window.location.href;
             let name = url.split('name=')[1];
             name = name.replaceAll('%22', '');
             document.querySelector('.name').value = name;
-        }
+        };
     </script>
 </body>
 </html>

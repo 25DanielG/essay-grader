@@ -130,13 +130,42 @@ app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); });
+app.post('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var essays, i;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, UserEssay.find()];
+            case 1:
+                essays = _a.sent();
+                if (!isValidObjectId(req.body.id)) return [3, 6];
+                i = 0;
+                _a.label = 2;
+            case 2:
+                if (!(i < essays.length)) return [3, 5];
+                if (!(essays[i]._id == req.body.id)) return [3, 4];
+                return [4, UserEssay.deleteOne({ _id: req.body.id })];
+            case 3:
+                _a.sent();
+                return [3, 5];
+            case 4:
+                ++i;
+                return [3, 2];
+            case 5: return [3, 7];
+            case 6:
+                res.sendStatus(502);
+                _a.label = 7;
+            case 7:
+                res.redirect("/");
+                return [2];
+        }
+    });
+}); });
 app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var grade, newEssay, _a, _b, _c, essay;
     var _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
-                console.log("Inside server student post");
                 grade = gradeEssay(req.body.content);
                 _b = (_a = Object).assign;
                 _c = [req.body];

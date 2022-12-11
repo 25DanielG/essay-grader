@@ -55,7 +55,7 @@
     top: auto;
     position: relative;
 }
-.sidebar button {
+.sidebar a {
     display: block;
     margin: auto;
     padding: 10px;
@@ -65,7 +65,7 @@
     border-radius: 25px;
     cursor: pointer;
     text-transform: uppercase;
-    width: 150px;
+    width: 125px;
     text-align: center;
     outline: none;
     transition-duration: 0.8s;
@@ -74,11 +74,11 @@
 .submit_button {
     padding: 10px;
 }
-.sidebar button:hover {
+.sidebar a:hover {
     background: #6f767b radial-gradient(circle, transparent 1%, #6f767b 1%) center/15000%;
     color: white;
 }
-.sidebar button:active {
+.sidebar a:active {
     background-color: #373c40;
     background-size: 100%;
     transition: 0s;

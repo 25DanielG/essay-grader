@@ -71,8 +71,21 @@ app.get('/view', async(req, res) => {
     }
 });
 
+app.post('/view', async(req, res) => {
+    let essays = await UserEssay.find();
+    if(isValidObjectId(req.body.id)) {
+        for(let i = 0; i < essays.length; ++i) {
+            if(essays[i]._id == req.body.id) {
+                await UserEssay.deleteOne({_id: req.body.id});
+                break;
+            }
+        }
+    } else
+        res.sendStatus(502);
+    res.redirect(`/`);
+});
+
 app.post('/student', async(req, res) => {
-    console.log("Inside server student post");
     let grade = gradeEssay(req.body.content);
     let newEssay = Object.assign(req.body, {
         name: req.body.name,
