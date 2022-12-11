@@ -71,7 +71,7 @@
     transition-duration: 0.8s;
     background-position: center;
 }
-.submit_button {
+.sidebar div {
     padding: 10px;
 }
 .sidebar a:hover {

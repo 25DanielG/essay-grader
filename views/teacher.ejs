@@ -20,14 +20,16 @@
             </div>
             <div class="list" onload="addEssays()">
                 <% submissions.forEach((essay) => { %>
-                    <form class="redirect_view_<%= essay._id %>" method="post">
-                        <input name="essay_id" type="text" style="display: none;" value="<%=essay._id%>">
-                        <a class="list_item_a">
-                            <div class="list_item" onclick="redirectToView('<%-essay._id%>')">
-                                <h2> <%= essay.name %> </h2>
-                            </div>
-                        </a>
-                    </form>
+                    <% if(essay.inProgress != true) { %>
+                        <form class="redirect_view_<%= essay._id %>" method="post">
+                            <input name="essay_id" type="text" style="display: none;" value="<%=essay._id%>">
+                            <a class="list_item_a">
+                                <div class="list_item" onclick="redirectToView('<%-essay._id%>')">
+                                    <h2> <%= essay.name %> </h2>
+                                </div>
+                            </a>
+                        </form>
+                    <% } %>
                 <% }); %>
             </div>
         </div>

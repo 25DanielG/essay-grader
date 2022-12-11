@@ -50,6 +50,8 @@ async function checkPlag(essay: string) {
     }
     let others = await UserEssay.find();
     for(let i = 0; i < others.length; ++i) {
+        if(others[i].inProgress)
+            continue;
         if(compareTwoStrings(others[i].content, essay) > 0.75) {
             ret.grade += 100;
             ret.incorrect.push(`Automatic 0 for plagiarizing ${others[i].name} `);

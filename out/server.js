@@ -48,7 +48,8 @@ mongoose.connect('mongodb://localhost:27017/submissions');
 var usrSchema = new mongoose.Schema({
     name: { type: String, required: true },
     content: { type: String, required: true },
-    created: { type: Number, required: true },
+    created: Number,
+    inProgress: { type: Boolean, required: true },
     grade: Number,
     incorrect: (Array),
     comments: String
@@ -61,21 +62,20 @@ app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); });
 app.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var essays, red;
+    var essays, flag;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4, UserEssay.find()];
             case 1:
                 essays = _a.sent();
-                red = false;
+                flag = false;
                 essays.forEach(function (essay) {
-                    if (essay.name === req.body.name && !red) {
-                        console.log(essay.name + " is equal to " + req.body.name);
+                    if (essay.name === req.body.name && !flag && !essay.inProgress) {
                         res.redirect("/view" + "?id=".concat(essay._id));
-                        red = true;
+                        flag = true;
                     }
                 });
-                if (!red)
+                if (!flag)
                     res.redirect("/student" + "?name=".concat(req.body.name));
                 return [2];
         }
@@ -103,9 +103,21 @@ app.post('/teacher', function (req, res) { return __awaiter(void 0, void 0, void
     });
 }); });
 app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var essays, content;
     return __generator(this, function (_a) {
-        res.render('student');
-        return [2];
+        switch (_a.label) {
+            case 0: return [4, UserEssay.find()];
+            case 1:
+                essays = _a.sent();
+                console.log("Param name: " + req.query.name);
+                essays.forEach(function (essay) {
+                    if (essay.name === req.query.name) {
+                        content = essay.content;
+                    }
+                });
+                res.render('student', { essay: content });
+                return [2];
+        }
     });
 }); });
 app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -161,18 +173,21 @@ app.post('/view', function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); });
 app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var grade, newEssay, _a, _b, _c, essay;
+    var newEssay, grade, _a, _b, _c, essay;
     var _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
+                console.log(req.body.prog);
+                if (!(req.body.prog == 'n')) return [3, 4];
                 grade = gradeEssay(req.body.content);
                 _b = (_a = Object).assign;
                 _c = [req.body];
                 _d = {
                     name: req.body.name,
                     content: req.body.content,
-                    created: new Date()
+                    created: new Date(),
+                    inProgress: false
                 };
                 return [4, grade];
             case 1:
@@ -184,18 +199,28 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
             case 3:
                 newEssay = _b.apply(_a, _c.concat([(_d.comments = (_e.sent()).comments,
                         _d)]));
+                return [3, 5];
+            case 4:
+                newEssay = Object.assign(req.body, {
+                    name: req.body.name,
+                    content: req.body.content,
+                    created: new Date(),
+                    inProgress: true
+                });
+                _e.label = 5;
+            case 5:
                 essay = new UserEssay(newEssay);
                 return [4, essay.save().then(function (result) {
                         console.log("Saved the essay");
                     })["catch"](function (err) {
                         console.log("Error while saving essay:" + err);
                     })];
-            case 4:
+            case 6:
                 _e.sent();
-                if (isValidObjectId(essay._id))
+                if (!essay.inProgress)
                     res.redirect("/view" + "?id=".concat(essay._id));
                 else
-                    res.sendStatus(502);
+                    res.redirect("/student" + "?name=".concat(essay.name));
                 return [2];
         }
     });

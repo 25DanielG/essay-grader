@@ -99,6 +99,8 @@ function checkPlag(essay) {
                 case 1:
                     others = _a.sent();
                     for (i = 0; i < others.length; ++i) {
+                        if (others[i].inProgress)
+                            continue;
                         if (compareTwoStrings(others[i].content, essay) > 0.75) {
                             ret.grade += 100;
                             ret.incorrect.push("Automatic 0 for plagiarizing ".concat(others[i].name, " "));

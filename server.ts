@@ -17,7 +17,8 @@ mongoose.connect('mongodb://localhost:27017/submissions');
 var usrSchema = new mongoose.Schema({
     name: {type: String, required: true},
     content: {type: String, required: true},
-    created: {type: Number, required: true},
+    created: Number,
+    inProgress: {type: Boolean, required: true},
     grade: Number,
     incorrect: Array<string>,
     comments: String
@@ -31,15 +32,14 @@ app.get('/', async(req, res) => {
 
 app.post('/', async(req, res) => {
     let essays = await UserEssay.find();
-    let red: boolean = false;
+    let flag: boolean = false;
     essays.forEach((essay) => {
-        if(essay.name === req.body.name && !red) {
-            console.log(essay.name + " is equal to " + req.body.name);
+        if(essay.name === req.body.name && !flag && !essay.inProgress) {
             res.redirect(`/view` + `?id=${essay._id}`);
-            red = true;
+            flag = true;
         }
     });
-    if(!red)
+    if(!flag)
         res.redirect(`/student` + `?name=${req.body.name}`);
 });
 
@@ -56,7 +56,14 @@ app.post('/teacher', async(req, res) => {
 });
 
 app.get('/student', async(req, res) => {
-    res.render('student');
+    let essays = await UserEssay.find();
+    let content;
+    essays.forEach((essay) => {
+        if(essay.name === req.query.name) {
+            content = essay.content;
+        }
+    });
+    res.render('student', { essay: content });
 });
 
 app.get('/view', async(req, res) => {
@@ -86,25 +93,36 @@ app.post('/view', async(req, res) => {
 });
 
 app.post('/student', async(req, res) => {
-    let grade = gradeEssay(req.body.content);
-    let newEssay = Object.assign(req.body, {
-        name: req.body.name,
-        content: req.body.content,
-        created: new Date(),
-        grade: (await grade).grade,
-        incorrect: (await grade).incorrect,
-        comments: (await grade).comments
-    });
+    let newEssay;
+    if(req.body.prog == 'n') {
+        let grade = gradeEssay(req.body.content);
+        newEssay = Object.assign(req.body, {
+            name: req.body.name,
+            content: req.body.content,
+            created: new Date(),
+            inProgress: false,
+            grade: (await grade).grade,
+            incorrect: (await grade).incorrect,
+            comments: (await grade).comments
+        });
+    } else {
+        newEssay = Object.assign(req.body, {
+            name: req.body.name,
+            content: req.body.content,
+            created: new Date(),
+            inProgress: true
+        });
+    }
     let essay = new UserEssay(newEssay);
     await essay.save().then((result: any) => {
         console.log("Saved the essay");
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    if(isValidObjectId(essay._id))
+    if(!essay.inProgress)
         res.redirect(`/view` + `?id=${essay._id}`);
     else
-        res.sendStatus(502);
+        res.redirect(`/student` + `?name=${essay.name}`);
 });
 
 app.listen(port, () => {

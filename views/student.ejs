@@ -17,12 +17,16 @@
             <form class="submission" method="post" action="/student">
                 <div class="sidebar">
                     <input type="text" name="name" class="name" style="display: none;"></input>
+                    <input type="text" name="prog" class="prog" style="display: none;"></input>
                     <div class="submit_button">
                         <a onclick="submitClicked()">Submit</a>
                     </div>
+                    <div class="save_button">
+                        <a onclick="saveEssay()">Save</a>
+                    </div>
                 </div>
                 <div class="front">
-                    <textarea name="content" class="scroll" type="text"></textarea>
+                    <textarea name="content" class="scroll" type="text"><%= essay %></textarea>
                 </div>
             </form>
         </div>
@@ -31,7 +35,15 @@
         function submitClicked() {
             let essay = document.querySelector('.scroll').value;
             let name = document.querySelector('.name').value;
+            document.querySelector('.prog').value = 'n';
             if(essay.trim() == "" || name.trim() == "")
+                return;
+            document.querySelector('.submission').submit();
+        }
+        function saveEssay() {
+            let name = document.querySelector('.name').value;
+            document.querySelector('.prog').value = 'y';
+            if(name.trim() == "")
                 return;
             document.querySelector('.submission').submit();
         }
