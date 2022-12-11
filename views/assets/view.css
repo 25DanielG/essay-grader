@@ -45,6 +45,14 @@
 .scroll:focus {
     outline: 0;
 }
+.side_scroll {
+    height: 615px;
+    width: 235px;
+    overflow-y: scroll;
+}
+.side_scroll::-webkit-scrollbar {
+    display: none;
+}
 .text_div {
     float: left;
 }

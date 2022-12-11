@@ -23,17 +23,24 @@
                     <div class="text_div">
                         <textarea name="content" class="scroll" type="text" disabled><%=essay.content%></textarea>
                     </div>
-                    <div class="score_info">
-                        <h2><%=essay.name%></h2>
-                    </div>
-                    <div class="score_info">
-                        <h2>Grade: <%=essay.grade%> / 100</h2>
-                    </div>
-                    <% for(let i = 0; i < essay.incorrect.length; ++i) { %>
-                        <div class="incor_info">
-                            <h2><%=essay.incorrect[i]%></h2>
+                    <div class="side_scroll">
+                        <div class="score_info">
+                            <h2><%=essay.name%></h2>
                         </div>
-                    <% } %>
+                        <div class="score_info">
+                            <h2>Grade: <%=essay.grade%> / 100</h2>
+                        </div>
+                        <div class="score_info">
+                            <a onclick="toggleIncor()">
+                                <h2 class="expand_incor">Show Incorrect</h2>
+                            </a>
+                        </div>
+                        <% for(let i = 0; i < essay.incorrect.length; ++i) { %>
+                            <div class="incor_info" style="display: none;">
+                                <h2><%=essay.incorrect[i]%></h2>
+                            </div>
+                        <% } %>
+                    </div>
                 </div>
             </form>
         </div>
@@ -42,6 +49,18 @@
         document.querySelector('.del').addEventListener('click', () => {
             document.querySelector('.essay_del').submit();
         });
+        function toggleIncor() {
+            document.querySelectorAll('.incor_info').forEach((element) => {
+                if(element.getAttribute('style').includes('none')) {
+                    element.setAttribute('style', 'display: block');
+                    document.querySelector('.expand_incor').innerHTML = "Hide Incorrect";
+                }
+                else {
+                    element.setAttribute('style', 'display: none');
+                    document.querySelector('.expand_incor').innerHTML = "Show Incorrect";
+                }
+            })
+        }
         window.onload = () => {
             let url = window.location.href;
             let id = url.split('id=')[1];
