@@ -15,9 +15,22 @@
     </header>
     <div class="back_centered">
         <div class="text_container">
-            <form class="submission" method="post" action="/student">
+            <form class="submission">
                 <div class="front">
-                    <textarea name="content" class="scroll" type="text" disabled><%=essay.content%></textarea>
+                    <div class="text_div">
+                        <textarea name="content" class="scroll" type="text" disabled><%=essay.content%></textarea>
+                    </div>
+                    <div class="score_info">
+                        <h2><%=essay.name%></h2>
+                    </div>
+                    <div class="score_info">
+                        <h2>Grade: <%=essay.grade%> / 100</h2>
+                    </div>
+                    <% for(let i = 0; i < essay.incorrect.length; ++i) { %>
+                        <div class="incor_info">
+                            <h2><%=essay.incorrect[i]%></h2>
+                        </div>
+                    <% } %>
                 </div>
             </form>
         </div>

@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
+import { Feedback } from './type.js';
 
 var app = express();
 const port = 2020;
@@ -18,10 +19,10 @@ var usrSchema = new mongoose.Schema({
     content: {type: String, required: true},
     created: {type: Number, required: true},
     grade: Number,
-    incorrect: String,
+    incorrect: Array<string>,
     comments: String
 });
-var UserEssay = mongoose.model('UserEssay', usrSchema); 
+export var UserEssay = mongoose.model('UserEssay', usrSchema); 
 
 app.get('/', async(req, res) => {
     res.render('login');
@@ -63,15 +64,20 @@ app.post('/student', async(req, res) => {
         name: req.body.name,
         content: req.body.content,
         created: new Date(),
-        grade: grade
+        grade: (await grade).grade,
+        incorrect: (await grade).incorrect,
+        comments: (await grade).comments
     });
     let essay = new UserEssay(newEssay);
-    await essay.save().then((result: any) =>{
+    await essay.save().then((result: any) => {
         console.log("Saved the essay");
     }).catch((err: any) => {
         console.log("Error while saving essay:" + err);
     })
-    res.redirect(`/view` + `?id=${essay._id}`);
+    if(isValidObjectId(essay._id))
+        res.redirect(`/view` + `?id=${essay._id}`);
+    else
+        res.sendStatus(502);
 });
 
 app.listen(port, () => {

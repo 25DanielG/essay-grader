@@ -50,10 +50,10 @@ var usrSchema = new mongoose.Schema({
     content: { type: String, required: true },
     created: { type: Number, required: true },
     grade: Number,
-    incorrect: String,
+    incorrect: (Array),
     comments: String
 });
-var UserEssay = mongoose.model('UserEssay', usrSchema);
+export var UserEssay = mongoose.model('UserEssay', usrSchema);
 app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         res.render('login');
@@ -110,27 +110,42 @@ app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); });
 app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var grade, newEssay, essay;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var grade, newEssay, _a, _b, _c, essay;
+    var _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
                 console.log("Inside server student post");
                 grade = gradeEssay(req.body.content);
-                newEssay = Object.assign(req.body, {
+                _b = (_a = Object).assign;
+                _c = [req.body];
+                _d = {
                     name: req.body.name,
                     content: req.body.content,
-                    created: new Date(),
-                    grade: grade
-                });
+                    created: new Date()
+                };
+                return [4, grade];
+            case 1:
+                _d.grade = (_e.sent()).grade;
+                return [4, grade];
+            case 2:
+                _d.incorrect = (_e.sent()).incorrect;
+                return [4, grade];
+            case 3:
+                newEssay = _b.apply(_a, _c.concat([(_d.comments = (_e.sent()).comments,
+                        _d)]));
                 essay = new UserEssay(newEssay);
                 return [4, essay.save().then(function (result) {
                         console.log("Saved the essay");
                     })["catch"](function (err) {
                         console.log("Error while saving essay:" + err);
                     })];
-            case 1:
-                _a.sent();
-                res.redirect("/view" + "?id=".concat(essay._id));
+            case 4:
+                _e.sent();
+                if (isValidObjectId(essay._id))
+                    res.redirect("/view" + "?id=".concat(essay._id));
+                else
+                    res.sendStatus(502);
                 return [2];
         }
     });
