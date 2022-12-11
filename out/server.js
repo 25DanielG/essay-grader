@@ -60,6 +60,27 @@ app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, func
         return [2];
     });
 }); });
+app.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var essays, red;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, UserEssay.find()];
+            case 1:
+                essays = _a.sent();
+                red = false;
+                essays.forEach(function (essay) {
+                    if (essay.name === req.body.name && !red) {
+                        console.log(essay.name + " is equal to " + req.body.name);
+                        res.redirect("/view" + "?id=".concat(essay._id));
+                        red = true;
+                    }
+                });
+                if (!red)
+                    res.redirect("/student" + "?name=".concat(req.body.name));
+                return [2];
+        }
+    });
+}); });
 app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var sub;
     return __generator(this, function (_a) {

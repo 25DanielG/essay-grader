@@ -29,6 +29,20 @@ app.get('/', async(req, res) => {
     // await UserEssay.deleteMany({});
 });
 
+app.post('/', async(req, res) => {
+    let essays = await UserEssay.find();
+    let red: boolean = false;
+    essays.forEach((essay) => {
+        if(essay.name === req.body.name && !red) {
+            console.log(essay.name + " is equal to " + req.body.name);
+            res.redirect(`/view` + `?id=${essay._id}`);
+            red = true;
+        }
+    });
+    if(!red)
+        res.redirect(`/student` + `?name=${req.body.name}`);
+});
+
 app.get('/teacher', async(req, res) => {
     let sub = await UserEssay.find();
     res.render("teacher", { submissions: sub });
