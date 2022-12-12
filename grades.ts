@@ -15,6 +15,7 @@ export async function gradeEssay(essay: string) {
         incorrect: [],
         comments: "N/A"
     }
+    essay = essay.trim();
     let replacedEssay = essay.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     let eachWord = replacedEssay.split(' ');
     let eachSentence = essay.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
@@ -110,7 +111,8 @@ function checkMispelling(eachWord: String[]) {
     }
     var content = fs.readFileSync('./dict/words.txt');
     for(let i = 0; i < eachWord.length; ++i) {
-        var regex = new RegExp('\n' + eachWord[i].toLowerCase() +'\n');
+        if(eachWord[i].trim() === '') continue;
+        var regex = new RegExp('\n' + eachWord[i].toLowerCase().trim() +'\n');
         if(!content.toString('utf-8').match(regex)) {
             ++ret.grade;
             ret.incorrect.push(`1 point off for typo: "${eachWord[i]}" `);

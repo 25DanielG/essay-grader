@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/assets/view.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Essay View</title>
 </head>
 
@@ -31,11 +32,8 @@
                             <h2>Grade: <%=essay.grade%> / 100</h2>
                         </div>
                         <div class="score_info">
-                            <h2><%=essay.inProgress%></h2>
-                        </div>
-                        <div class="score_info">
                             <a onclick="toggleIncor()">
-                                <h2 class="expand_incor">Show Incorrect</h2>
+                                <h2 class="expand_incor"><i class="material-icons" style="font-size: 14px;">&#xe5c5;</i>Show Incorrect</h2>
                             </a>
                         </div>
                         <% for(let i = 0; i < essay.incorrect.length; ++i) { %>
@@ -56,11 +54,15 @@
             document.querySelectorAll('.incor_info').forEach((element) => {
                 if(element.getAttribute('style').includes('none')) {
                     element.setAttribute('style', 'display: block');
-                    document.querySelector('.expand_incor').innerHTML = "Hide Incorrect";
+                    document.querySelector('.expand_incor').innerHTML = ''
+                      +  '<i class="material-icons" style="font-size: 14px;">arrow_drop_up</i>'
+                      +  'Hide Incorrect';
                 }
                 else {
                     element.setAttribute('style', 'display: none');
-                    document.querySelector('.expand_incor').innerHTML = "Show Incorrect";
+                    document.querySelector('.expand_incor').innerHTML = ''
+                      +  '<i class="material-icons" style="font-size: 14px;">arrow_drop_down</i>'
+                      +  'Show Incorrect';
                 }
             })
         }

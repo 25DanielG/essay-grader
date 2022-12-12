@@ -54,6 +54,7 @@ export function gradeEssay(essay) {
                         incorrect: [],
                         comments: "N/A"
                     };
+                    essay = essay.trim();
                     replacedEssay = essay.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
                     eachWord = replacedEssay.split(' ');
                     eachSentence = essay.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
@@ -163,7 +164,9 @@ function checkMispelling(eachWord) {
     };
     var content = fs.readFileSync('./dict/words.txt');
     for (var i = 0; i < eachWord.length; ++i) {
-        var regex = new RegExp('\n' + eachWord[i].toLowerCase() + '\n');
+        if (eachWord[i].trim() === '')
+            continue;
+        var regex = new RegExp('\n' + eachWord[i].toLowerCase().trim() + '\n');
         if (!content.toString('utf-8').match(regex)) {
             ++ret.grade;
             ret.incorrect.push("1 point off for typo: \"".concat(eachWord[i], "\" "));

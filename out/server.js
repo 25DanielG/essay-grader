@@ -109,7 +109,6 @@ app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 
             case 0: return [4, UserEssay.find()];
             case 1:
                 essays = _a.sent();
-                console.log("Param name: " + req.query.name);
                 essays.forEach(function (essay) {
                     if (essay.name === req.query.name) {
                         content = essay.content;
@@ -178,7 +177,6 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
-                console.log(req.body.prog);
                 if (!(req.body.prog == 'n')) return [3, 4];
                 grade = gradeEssay(req.body.content);
                 _b = (_a = Object).assign;
