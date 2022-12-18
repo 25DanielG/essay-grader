@@ -71,7 +71,7 @@ app.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                 flag = false;
                 essays.forEach(function (essay) {
                     if (essay.name === req.body.name && !flag && !essay.inProgress) {
-                        res.redirect("/view" + "?id=".concat(essay._id));
+                        res.redirect("/student/view" + "?id=".concat(essay._id));
                         flag = true;
                     }
                 });
@@ -96,7 +96,7 @@ app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 
 app.post('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         if (isValidObjectId(req.body.essay_id))
-            res.redirect("/view" + "?id=".concat(req.body.essay_id));
+            res.redirect("/teacher/view" + "?id=".concat(req.body.essay_id));
         else
             res.sendStatus(502);
         return [2];
@@ -119,7 +119,7 @@ app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/student/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var found_essay, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -129,7 +129,7 @@ app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 1:
                 found_essay = _a.sent();
                 if (found_essay)
-                    res.render('view', { essay: found_essay });
+                    res.render('view', { essay: found_essay, user: "student" });
                 else
                     res.sendStatus(404);
                 return [3, 3];
@@ -141,7 +141,29 @@ app.get('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); });
-app.post('/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/teacher/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var found_essay, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4, UserEssay.findById(req.query.id)];
+            case 1:
+                found_essay = _a.sent();
+                if (found_essay)
+                    res.render('view', { essay: found_essay, user: "teacher" });
+                else
+                    res.sendStatus(404);
+                return [3, 3];
+            case 2:
+                err_2 = _a.sent();
+                console.log("Error while finding the essay to display: " + err_2);
+                return [3, 3];
+            case 3: return [2];
+        }
+    });
+}); });
+app.post('/del', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var essays, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -167,6 +189,25 @@ app.post('/view', function (req, res) { return __awaiter(void 0, void 0, void 0,
                 _a.label = 7;
             case 7:
                 res.redirect("/");
+                return [2];
+        }
+    });
+}); });
+app.post('/teacher/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Inside comment post request");
+                if (!isValidObjectId(req.body.id)) return [3, 2];
+                return [4, UserEssay.updateOne({ _id: req.body.id }, { $set: { comments: req.body.comments } })];
+            case 1:
+                _a.sent();
+                return [3, 3];
+            case 2:
+                res.sendStatus(502);
+                _a.label = 3;
+            case 3:
+                res.redirect("/teacher");
                 return [2];
         }
     });
@@ -216,7 +257,7 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
             case 6:
                 _e.sent();
                 if (!essay.inProgress)
-                    res.redirect("/view" + "?id=".concat(essay._id));
+                    res.redirect("/student/view" + "?id=".concat(essay._id));
                 else
                     res.redirect("/student" + "?name=".concat(essay.name));
                 return [2];

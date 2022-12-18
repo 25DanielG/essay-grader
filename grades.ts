@@ -19,6 +19,8 @@ export async function gradeEssay(essay: string) {
     let replacedEssay = essay.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     let eachWord = replacedEssay.split(' ');
     let eachSentence = essay.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+    for(let i = 0; i < eachSentence.length; ++i) 
+        eachSentence[i] = eachSentence[i].trim();
     let out_words = getFirstAndLast(eachSentence);
     let erorrs: Feedback[] = [];
 

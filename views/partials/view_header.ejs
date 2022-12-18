@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href= "../assets/header.css" rel="stylesheet" type="text/css" />
-    <link href= "../assets/view_header.css" rel="stylesheet" type="text/css" />
+    <link href= "../assets/css/header.css" rel="stylesheet" type="text/css" />
+    <link href= "../assets/css/view_header.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="topnav">
         <a class="active" href="http://localhost:2020">Essay Grader</a>
         <a class="del"><i style="font-size:17px" class="fa">&#xf014;</i></a>
+        <a class="info"><%=essay.name%></a>
+        <a class="info">Grade: <%=essay.grade%>/100</a>
     </div>
 </body>
 </html>

@@ -10,7 +10,8 @@
       "outDir": "out",
       "lib": [
           "es6",
-          "ES2021.String"
+          "ES2021.String",
+          "ES2018.Regexp"
       ],
     },
     "exclude": [

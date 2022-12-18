@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
+import mongoose, { isValidObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
 import { Feedback } from './type.js';
 
@@ -35,7 +35,7 @@ app.post('/', async(req, res) => {
     let flag: boolean = false;
     essays.forEach((essay) => {
         if(essay.name === req.body.name && !flag && !essay.inProgress) {
-            res.redirect(`/view` + `?id=${essay._id}`);
+            res.redirect(`/student/view` + `?id=${essay._id}`);
             flag = true;
         }
     });
@@ -50,7 +50,7 @@ app.get('/teacher', async(req, res) => {
 
 app.post('/teacher', async(req, res) => {
     if(isValidObjectId(req.body.essay_id))
-        res.redirect(`/view` + `?id=${req.body.essay_id}`);
+        res.redirect(`/teacher/view` + `?id=${req.body.essay_id}`);
     else
         res.sendStatus(502);
 });
@@ -66,11 +66,11 @@ app.get('/student', async(req, res) => {
     res.render('student', { essay: content });
 });
 
-app.get('/view', async(req, res) => {
+app.get('/student/view', async(req, res) => {
     try {
         let found_essay = await UserEssay.findById(req.query.id);
         if(found_essay)
-            res.render('view', { essay: found_essay });
+            res.render('view', { essay: found_essay, user: "student" });
         else
             res.sendStatus(404);
     } catch (err) {
@@ -78,7 +78,19 @@ app.get('/view', async(req, res) => {
     }
 });
 
-app.post('/view', async(req, res) => {
+app.get('/teacher/view', async(req, res) => {
+    try {
+        let found_essay = await UserEssay.findById(req.query.id);
+        if(found_essay)
+            res.render('view', { essay: found_essay, user: "teacher" });
+        else
+            res.sendStatus(404);
+    } catch (err) {
+        console.log("Error while finding the essay to display: " + err);
+    }
+});
+
+app.post('/del', async(req, res) => {
     let essays = await UserEssay.find();
     if(isValidObjectId(req.body.id)) {
         for(let i = 0; i < essays.length; ++i) {
@@ -90,6 +102,16 @@ app.post('/view', async(req, res) => {
     } else
         res.sendStatus(502);
     res.redirect(`/`);
+});
+
+app.post('/teacher/view', async (req, res) => {
+    console.log("Inside comment post request");
+    if (isValidObjectId(req.body.id)) {
+      await UserEssay.updateOne({ _id: req.body.id }, { $set: { comments: req.body.comments } });
+    } else {
+      res.sendStatus(502);
+    }
+    res.redirect(`/teacher`);
 });
 
 app.post('/student', async(req, res) => {
@@ -120,7 +142,7 @@ app.post('/student', async(req, res) => {
         console.log("Error while saving essay:" + err);
     })
     if(!essay.inProgress)
-        res.redirect(`/view` + `?id=${essay._id}`);
+        res.redirect(`/student/view` + `?id=${essay._id}`);
     else
         res.redirect(`/student` + `?name=${essay.name}`);
 });

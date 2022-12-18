@@ -45,7 +45,7 @@ var no_nos = [
 ];
 export function gradeEssay(essay) {
     return __awaiter(this, void 0, void 0, function () {
-        var ret, replacedEssay, eachWord, eachSentence, out_words, erorrs, plagiarizing, plag_flag;
+        var ret, replacedEssay, eachWord, eachSentence, i, out_words, erorrs, plagiarizing, plag_flag;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58,6 +58,8 @@ export function gradeEssay(essay) {
                     replacedEssay = essay.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
                     eachWord = replacedEssay.split(' ');
                     eachSentence = essay.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+                    for (i = 0; i < eachSentence.length; ++i)
+                        eachSentence[i] = eachSentence[i].trim();
                     out_words = getFirstAndLast(eachSentence);
                     erorrs = [];
                     erorrs.push(checkMispelling(eachWord));
