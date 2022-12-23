@@ -35,8 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import express from 'express';
+import session from 'express-session';
 import mongoose, { isValidObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
+import { OAuth2Client } from 'google-auth-library';
+import { CLIENT_ID } from './keys.js';
+var googleAuthClient = new OAuth2Client(CLIENT_ID);
 var app = express();
 var port = 2020;
 app.set('view engine', 'ejs');
@@ -44,6 +48,11 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
+app.use(session({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: true
+}));
 mongoose.connect('mongodb://localhost:27017/submissions');
 var usrSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -65,7 +74,11 @@ app.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     var essays, flag;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4, UserEssay.find()];
+            case 0:
+                console.log("Inside student post with token");
+                console.log(req.body.name);
+                console.log(req.body.token);
+                return [4, UserEssay.find()];
             case 1:
                 essays = _a.sent();
                 flag = false;
@@ -85,7 +98,9 @@ app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 
     var sub;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4, UserEssay.find()];
+            case 0:
+                console.log("Inside teacher post with token");
+                return [4, UserEssay.find()];
             case 1:
                 sub = _a.sent();
                 res.render("teacher", { submissions: sub });

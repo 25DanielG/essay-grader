@@ -1,4 +1,6 @@
 node_modules
 *.js.map
-views/assets/js/keys.js
 views/assets/css_old
+keys.ts
+out/keys.js
+out/keys.js.map

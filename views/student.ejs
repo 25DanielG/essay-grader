@@ -16,8 +16,6 @@
     <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
     <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
 
-    <pre id="content" style="white-space: pre-wrap;"></pre>
-
     <div class="back_centered">
         <div class="text_container">
             <form class="submission" method="post" action="/student">
@@ -53,15 +51,14 @@
                 return;
             document.querySelector('.submission').submit();
         }
-        window.onload = () => {
+        window.onload = async () => {
             let url = window.location.href;
             let name = url.split('name=')[1];
             name = name.replaceAll('%22', '');
             document.querySelector('.name').value = name;
+            await createAndEmbedDoc();
         };
-        const CLIENT_ID = 'oh hell nah';
-        const API_KEY = 'did you just try looking at my api key?';
-        const CLIENT_SECRET = 'stop looking';
+        
 
         // Discovery doc URL for APIs used by the quickstart
         const DISCOVERY_DOC = [
@@ -73,22 +70,10 @@
         // included, separated by spaces.
         const SCOPES = 'https://www.googleapis.com/auth/documents.readonly https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file';
 
-        let tokenClient;
-        let gapiInited = false;
-        let gisInited = false;
-
-        document.getElementById('signout_button').style.visibility = 'hidden';
-        document.getElementById('authorize_button').style.visibility = 'hidden';
-
-        /**
-         * Callback after api.js is loaded.
-         */
         function gapiLoaded() {
             gapi.load('client', function() {
                 initializeGapiClient();
             });
-            console.log(gapi);
-            maybeEnableButtons();
         }
 
         function gisLoaded() {
@@ -97,95 +82,6 @@
                 scope: SCOPES,
                 callback: '', // defined later
             });
-            gisInited = true;
-            maybeEnableButtons();
-        }
-
-        function maybeEnableButtons() {
-            if (gapiInited && gisInited) {
-                document.getElementById('authorize_button').style.visibility = 'visible';
-            }
-        }
-
-        /**
-         * Callback after the API client is loaded. Loads the
-         * discovery doc to initialize the API.
-         */
-        async function initializeGapiClient() {
-            try {
-                console.log("Doing the gapi.client.init function");
-                await gapi.client.init({
-                    apiKey: API_KEY,
-                    discoveryDocs: DISCOVERY_DOC,
-                    //clientId: CLIENT_ID,
-                    //scope: SCOPES,
-                }).then(function () {
-                    console.log("Initialized");
-                });
-                gapiInited = true;
-                maybeEnableButtons();
-            } catch (error) {
-                console.error(error);
-                alert("Error initializing gapi.client: " + error.message);
-            }
-        }
-
-        /**
-         *  Sign in the user upon button click.
-         */
-        async function handleAuthClick() {
-            tokenClient.callback = async (resp) => {
-                if (resp.error !== undefined) {
-                    throw (resp);
-                }
-                document.getElementById('signout_button').style.visibility = 'visible';
-                document.getElementById('authorize_button').innerText = 'Refresh';
-                await printDocTitle();
-                await createAndEmbedDoc();
-            };
-
-            if (gapi.client.getToken() === null) {
-                // Prompt the user to select a Google Account and ask for consent to share their data
-                // when establishing a new session.
-                tokenClient.requestAccessToken({prompt: 'consent'});
-            } else {
-                // Skip display of account chooser and consent dialog for an existing session.
-                tokenClient.requestAccessToken({prompt: ''});
-            }
-        }
-
-        /**
-         *  Sign out the user upon button click.
-         */
-        function handleSignoutClick() {
-            const token = gapi.client.getToken();
-            if (token !== null) {
-                google.accounts.oauth2.revoke(token.access_token);
-                gapi.client.setToken('');
-                document.getElementById('content').innerText = '';
-                document.getElementById('authorize_button').innerText = 'Authorize';
-                document.getElementById('signout_button').style.visibility = 'hidden';
-            }
-            document.querySelector('.docs_embed').remove();
-            window.location.href = 'http://localhost:2020/';
-        }
-
-        /**
-         * Prints the title of a sample doc:
-         * https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
-         */
-        async function printDocTitle() {
-            try {
-                const response = await gapi.client.docs.documents.get({
-                    documentId: '195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE',
-                });
-                const doc = response.result;
-                const output = `Document ${doc.title} successfully found.\n`;
-                console.log(output);
-            } catch (err) {
-                console.log(err.message);
-            return;
-            }
         }
 
         async function createAndEmbedDoc() {

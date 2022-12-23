@@ -1,7 +1,13 @@
 import express from 'express';
+import session from 'express-session';
+import * as http from 'http';
 import mongoose, { isValidObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
 import { Feedback } from './type.js';
+import { OAuth2Client } from 'google-auth-library';
+import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './keys.js'
+
+const googleAuthClient = new OAuth2Client(CLIENT_ID);
 
 var app = express();
 const port = 2020;
@@ -11,6 +17,11 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
+app.use(session({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: true,
+}));
 
 mongoose.connect('mongodb://localhost:27017/submissions');
 
@@ -25,12 +36,17 @@ var usrSchema = new mongoose.Schema({
 });
 export var UserEssay = mongoose.model('UserEssay', usrSchema); 
 
+// RENDER LOGIN
 app.get('/', async(req, res) => {
     res.render('login');
     // await UserEssay.deleteMany({});
 });
 
+// RENDER STUDENT & IN PROGRESS
 app.post('/', async(req, res) => {
+    console.log("Inside student post with token");
+    console.log(req.body.name);
+    console.log(req.body.token);
     let essays = await UserEssay.find();
     let flag: boolean = false;
     essays.forEach((essay) => {
@@ -43,11 +59,14 @@ app.post('/', async(req, res) => {
         res.redirect(`/student` + `?name=${req.body.name}`);
 });
 
+// RENDER TEACHER PAGE
 app.get('/teacher', async(req, res) => {
+    console.log("Inside teacher post with token");
     let sub = await UserEssay.find();
     res.render("teacher", { submissions: sub });
 });
 
+// TEACHER VIEW PREPROCESS
 app.post('/teacher', async(req, res) => {
     if(isValidObjectId(req.body.essay_id))
         res.redirect(`/teacher/view` + `?id=${req.body.essay_id}`);
@@ -55,6 +74,7 @@ app.post('/teacher', async(req, res) => {
         res.sendStatus(502);
 });
 
+// RENDER STUDENT PAGE
 app.get('/student', async(req, res) => {
     let essays = await UserEssay.find();
     let content;
@@ -66,6 +86,7 @@ app.get('/student', async(req, res) => {
     res.render('student', { essay: content });
 });
 
+// VIEWS
 app.get('/student/view', async(req, res) => {
     try {
         let found_essay = await UserEssay.findById(req.query.id);
@@ -90,6 +111,7 @@ app.get('/teacher/view', async(req, res) => {
     }
 });
 
+// DELETE AN ESSAY
 app.post('/del', async(req, res) => {
     let essays = await UserEssay.find();
     if(isValidObjectId(req.body.id)) {
@@ -104,6 +126,7 @@ app.post('/del', async(req, res) => {
     res.redirect(`/`);
 });
 
+// TEACHER COMMENTS
 app.post('/teacher/view', async (req, res) => {
     console.log("Inside comment post request");
     if (isValidObjectId(req.body.id)) {
@@ -114,6 +137,7 @@ app.post('/teacher/view', async (req, res) => {
     res.redirect(`/teacher`);
 });
 
+// SUBMIT/SAVE ESSAY
 app.post('/student', async(req, res) => {
     let newEssay;
     if(req.body.prog == 'n') {
