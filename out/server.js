@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import express from 'express';
 import session from 'express-session';
+import url from 'url';
 import mongoose, { isValidObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
 import { OAuth2Client } from 'google-auth-library';
@@ -59,6 +60,7 @@ var usrSchema = new mongoose.Schema({
     content: { type: String, required: true },
     created: Number,
     inProgress: { type: Boolean, required: true },
+    googleId: String,
     grade: Number,
     incorrect: (Array),
     comments: String
@@ -71,25 +73,82 @@ app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); });
 app.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var essays, flag;
+    var essays, flag, newEssay, essay;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log("Inside student post with token");
-                console.log(req.body.name);
-                console.log(req.body.token);
-                return [4, UserEssay.find()];
+            case 0: return [4, UserEssay.find()];
             case 1:
                 essays = _a.sent();
                 flag = false;
                 essays.forEach(function (essay) {
-                    if (essay.name === req.body.name && !flag && !essay.inProgress) {
-                        res.redirect("/student/view" + "?id=".concat(essay._id));
+                    if (essay.name === req.body.name && !flag) {
+                        if (!essay.inProgress) {
+                            res.redirect(url.format({
+                                pathname: '/student/view',
+                                query: {
+                                    'id': essay._id,
+                                    'access_token': req.body.token,
+                                    'document_id': essay.googleId
+                                }
+                            }));
+                        }
+                        else {
+                            res.redirect(url.format({
+                                pathname: '/student',
+                                query: {
+                                    'name': essay.name,
+                                    'access_token': req.body.token,
+                                    'document_id': essay.googleId
+                                }
+                            }));
+                        }
                         flag = true;
                     }
                 });
-                if (!flag)
-                    res.redirect("/student" + "?name=".concat(req.body.name));
+                if (!!flag) return [3, 3];
+                newEssay = Object.assign(req.body, {
+                    name: req.body.name,
+                    content: " ",
+                    created: new Date(),
+                    inProgress: true
+                });
+                essay = new UserEssay(newEssay);
+                return [4, essay.save()];
+            case 2:
+                _a.sent();
+                res.redirect(url.format({
+                    pathname: '/student',
+                    query: {
+                        'name': essay.name,
+                        'access_token': req.body.token
+                    }
+                }));
+                _a.label = 3;
+            case 3: return [2];
+        }
+    });
+}); });
+app.post('/update-id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var essays;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, UserEssay.find()];
+            case 1:
+                essays = _a.sent();
+                essays.forEach(function (essay) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!(essay.name === req.body.name)) return [3, 2];
+                                essay.googleId = req.body.docId;
+                                return [4, essay.save()];
+                            case 1:
+                                _a.sent();
+                                _a.label = 2;
+                            case 2: return [2];
+                        }
+                    });
+                }); });
                 return [2];
         }
     });
@@ -98,9 +157,7 @@ app.get('/teacher', function (req, res) { return __awaiter(void 0, void 0, void 
     var sub;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log("Inside teacher post with token");
-                return [4, UserEssay.find()];
+            case 0: return [4, UserEssay.find()];
             case 1:
                 sub = _a.sent();
                 res.render("teacher", { submissions: sub });
@@ -118,20 +175,9 @@ app.post('/teacher', function (req, res) { return __awaiter(void 0, void 0, void
     });
 }); });
 app.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var essays, content;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4, UserEssay.find()];
-            case 1:
-                essays = _a.sent();
-                essays.forEach(function (essay) {
-                    if (essay.name === req.query.name) {
-                        content = essay.content;
-                    }
-                });
-                res.render('student', { essay: content });
-                return [2];
-        }
+        res.render('student');
+        return [2];
     });
 }); });
 app.get('/student/view', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -212,7 +258,6 @@ app.post('/teacher/view', function (req, res) { return __awaiter(void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("Inside comment post request");
                 if (!isValidObjectId(req.body.id)) return [3, 2];
                 return [4, UserEssay.updateOne({ _id: req.body.id }, { $set: { comments: req.body.comments } })];
             case 1:
@@ -233,7 +278,7 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0:
-                if (!(req.body.prog == 'n')) return [3, 4];
+                console.log("Inside post submit");
                 grade = gradeEssay(req.body.content);
                 _b = (_a = Object).assign;
                 _c = [req.body];
@@ -253,23 +298,13 @@ app.post('/student', function (req, res) { return __awaiter(void 0, void 0, void
             case 3:
                 newEssay = _b.apply(_a, _c.concat([(_d.comments = (_e.sent()).comments,
                         _d)]));
-                return [3, 5];
-            case 4:
-                newEssay = Object.assign(req.body, {
-                    name: req.body.name,
-                    content: req.body.content,
-                    created: new Date(),
-                    inProgress: true
-                });
-                _e.label = 5;
-            case 5:
                 essay = new UserEssay(newEssay);
                 return [4, essay.save().then(function (result) {
                         console.log("Saved the essay");
                     })["catch"](function (err) {
                         console.log("Error while saving essay:" + err);
                     })];
-            case 6:
+            case 4:
                 _e.sent();
                 if (!essay.inProgress)
                     res.redirect("/student/view" + "?id=".concat(essay._id));

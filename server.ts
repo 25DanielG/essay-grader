@@ -1,6 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import * as http from 'http';
+import url from 'url';
 import mongoose, { isValidObjectId } from 'mongoose';
 import { gradeEssay } from './grades.js';
 import { Feedback } from './type.js';
@@ -30,6 +31,7 @@ var usrSchema = new mongoose.Schema({
     content: {type: String, required: true},
     created: Number,
     inProgress: {type: Boolean, required: true},
+    googleId: String,
     grade: Number,
     incorrect: Array<string>,
     comments: String
@@ -44,24 +46,64 @@ app.get('/', async(req, res) => {
 
 // RENDER STUDENT & IN PROGRESS
 app.post('/', async(req, res) => {
-    console.log("Inside student post with token");
-    console.log(req.body.name);
-    console.log(req.body.token);
     let essays = await UserEssay.find();
     let flag: boolean = false;
     essays.forEach((essay) => {
-        if(essay.name === req.body.name && !flag && !essay.inProgress) {
-            res.redirect(`/student/view` + `?id=${essay._id}`);
+        if(essay.name === req.body.name && !flag) {
+            if(!essay.inProgress) {
+                res.redirect(url.format({
+                    pathname:'/student/view',
+                    query: {
+                        'id': essay._id as unknown as string,
+                        'access_token': req.body.token,
+                        'document_id': essay.googleId
+                    }
+                }));
+            } else {
+                res.redirect(url.format({
+                    pathname:'/student',
+                    query: {
+                        'name': essay.name,
+                        'access_token': req.body.token,
+                        'document_id': essay.googleId
+                    }
+                }));
+            }
             flag = true;
         }
     });
-    if(!flag)
-        res.redirect(`/student` + `?name=${req.body.name}`);
+    if(!flag) {
+        let newEssay = Object.assign(req.body, {
+            name: req.body.name,
+            content: " ",
+            created: new Date(),
+            inProgress: true
+        });
+        let essay = new UserEssay(newEssay);
+        await essay.save();
+        res.redirect(url.format({
+            pathname:'/student',
+            query: {
+               'name': essay.name,
+               'access_token': req.body.token
+            }
+        }));
+    }
+});
+
+// UPDATE THE GOOGLE DOCUMENT ID
+app.post('/update-id', async(req, res) => {
+    let essays = await UserEssay.find();
+    essays.forEach(async (essay) => {
+        if(essay.name === req.body.name) {
+            essay.googleId = req.body.docId;
+            await essay.save();
+        }
+    });
 });
 
 // RENDER TEACHER PAGE
 app.get('/teacher', async(req, res) => {
-    console.log("Inside teacher post with token");
     let sub = await UserEssay.find();
     res.render("teacher", { submissions: sub });
 });
@@ -76,14 +118,7 @@ app.post('/teacher', async(req, res) => {
 
 // RENDER STUDENT PAGE
 app.get('/student', async(req, res) => {
-    let essays = await UserEssay.find();
-    let content;
-    essays.forEach((essay) => {
-        if(essay.name === req.query.name) {
-            content = essay.content;
-        }
-    });
-    res.render('student', { essay: content });
+    res.render('student');
 });
 
 // VIEWS
@@ -128,7 +163,6 @@ app.post('/del', async(req, res) => {
 
 // TEACHER COMMENTS
 app.post('/teacher/view', async (req, res) => {
-    console.log("Inside comment post request");
     if (isValidObjectId(req.body.id)) {
       await UserEssay.updateOne({ _id: req.body.id }, { $set: { comments: req.body.comments } });
     } else {
@@ -137,28 +171,19 @@ app.post('/teacher/view', async (req, res) => {
     res.redirect(`/teacher`);
 });
 
-// SUBMIT/SAVE ESSAY
+// SUBMIT ESSAY
 app.post('/student', async(req, res) => {
     let newEssay;
-    if(req.body.prog == 'n') {
-        let grade = gradeEssay(req.body.content);
-        newEssay = Object.assign(req.body, {
-            name: req.body.name,
-            content: req.body.content,
-            created: new Date(),
-            inProgress: false,
-            grade: (await grade).grade,
-            incorrect: (await grade).incorrect,
-            comments: (await grade).comments
-        });
-    } else {
-        newEssay = Object.assign(req.body, {
-            name: req.body.name,
-            content: req.body.content,
-            created: new Date(),
-            inProgress: true
-        });
-    }
+    let grade = gradeEssay(req.body.content);
+    newEssay = Object.assign(req.body, {
+        name: req.body.name,
+        content: req.body.content,
+        created: new Date(),
+        inProgress: false,
+        grade: (await grade).grade,
+        incorrect: (await grade).incorrect,
+        comments: (await grade).comments
+    });
     let essay = new UserEssay(newEssay);
     await essay.save().then((result: any) => {
         console.log("Saved the essay");
