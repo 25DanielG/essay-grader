@@ -144,7 +144,7 @@
                         .catch(error => console.error(error))
                     });
                 } else {
-                    window.location.href = 'http://localhost:2020/teacher';
+                    window.location.href = `http://localhost:2020/teacher?token=${gapi.client.getToken().access_token}`;
                 }
             };
             if (gapi.client.getToken() === null) {

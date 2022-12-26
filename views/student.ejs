@@ -18,7 +18,6 @@
             <form class="submission" method="post" action="/student">
                 <div class="sidebar">
                     <input type="text" name="name" class="name" style="display: none;"></input>
-                    <input type="text" name="prog" class="prog" style="display: none;"></input>
                     <input type="text" name="documentId" class="doc_id" style="display: none;"></input>
                     <input type="text" name="content" class="content" style="display: none;"></input>
                     <div class="submit_button">
@@ -49,7 +48,6 @@
                 essay = docText;
             });
             let name = document.querySelector('.name').value;
-            document.querySelector('.prog').value = 'n';
             document.querySelector('.content').value = essay;
             if(essay.trim() == '')
                 return;

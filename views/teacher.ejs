@@ -21,8 +21,10 @@
             <div class="list" onload="addEssays()">
                 <% submissions.forEach((essay) => { %>
                     <% if(essay.inProgress != true) { %>
-                        <form class="redirect_view_<%= essay._id %>" method="post">
+                        <form class="redirect_view_<%= essay._id %>" action="/teacher" method="post">
                             <input name="essay_id" type="text" style="display: none;" value="<%=essay._id%>">
+                            <input name="googleId" type="text" style="display: none;" value="<%=essay.googleId%>">
+                            <input name="token" type="text" style="display: none;" value="<%=token%>">
                             <a class="list_item_a">
                                 <div class="list_item" onclick="redirectToView('<%-essay._id%>')">
                                     <h2> <%= essay.name %> </h2>

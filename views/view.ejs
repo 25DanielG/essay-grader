@@ -21,7 +21,7 @@
             </form>
             <div class="front">
                 <div class="text_div">
-                    <textarea name="content" class="scroll" type="text" disabled><%=essay.content%></textarea>
+                    
                 </div>
                 <% if(user === "student") { %>
                     <div class="side_scroll">
@@ -57,9 +57,9 @@
         </div>
     </div>
     <script>
-        document.querySelector('.del').addEventListener('click', () => {
+        async function deleteEssay() {
             document.querySelector('.essay_del').submit();
-        });
+        };
         function postComments() {
             let comments = document.querySelector('.entered_comments').value;
             if(comments.trim() === '')
@@ -85,15 +85,29 @@
                 }
             })
         }
-        window.onload = () => {
-            let url = window.location.href;
-            let id = url.split('id=')[1];
-            id = id.replaceAll('%22', '');
+        window.onload = async () => {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            let id = urlParams.get('id').replaceAll('%22', '');
+            documentId = urlParams.get('document_id').replaceAll('%22', '');
+            await embedDoc();
             let inputs = document.querySelectorAll('.id');
             inputs.forEach((input) => {
                 input.value = id;
             });
         };
+
+        let documentId;
+
+        async function embedDoc() {
+            const embedUrl = `https://docs.google.com/document/d/${documentId}/preview`;
+            const iframe = document.createElement('iframe');
+            iframe.src = embedUrl;
+            iframe.width = 735;
+            iframe.height = 550;
+            iframe.className = 'docs_embed'
+            document.querySelector('.text_div').appendChild(iframe);
+        }
     </script>
 </body>
 </html>

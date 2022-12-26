@@ -11,7 +11,9 @@
 <body>
     <div class="topnav">
         <a class="active" href="http://localhost:2020">Essay Grader</a>
-        <a class="del"><i style="font-size:17px" class="fa">&#xf014;</i></a>
+        <% if(user === "teacher") { %>
+            <a class="del" onclick="deleteEssay()"><i style="font-size:17px" class="fa">&#xf014;</i></a>
+        <% } %>
         <a class="info"><%=essay.name%></a>
         <a class="info">Grade: <%=essay.grade%>/100</a>
     </div>

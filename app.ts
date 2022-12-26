@@ -1,15 +1,12 @@
 import express from 'express';
-import session from 'express-session';
-import * as http from 'http';
 import url from 'url';
-import mongoose, { isValidObjectId } from 'mongoose';
-import { gradeEssay } from './grades.js';
-import { Feedback } from './type.js';
+import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
+import { gradeEssay } from './util/grades.js';
+import { Feedback } from './util/type.js';
 import { OAuth2Client } from 'google-auth-library';
-import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './keys.js'
+import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './util/keys.js'
 
 const googleAuthClient = new OAuth2Client(CLIENT_ID);
-
 var app = express();
 const port = 2020;
 
@@ -18,11 +15,6 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
-app.use(session({
-    secret: 'my-secret',
-    resave: false,
-    saveUninitialized: true,
-}));
 
 mongoose.connect('mongodb://localhost:27017/submissions');
 
@@ -54,8 +46,7 @@ app.post('/', async(req, res) => {
                 res.redirect(url.format({
                     pathname:'/student/view',
                     query: {
-                        'id': essay._id as unknown as string,
-                        'access_token': req.body.token,
+                        'id': essay._id.toString(),
                         'document_id': essay.googleId
                     }
                 }));
@@ -105,14 +96,21 @@ app.post('/update-id', async(req, res) => {
 // RENDER TEACHER PAGE
 app.get('/teacher', async(req, res) => {
     let sub = await UserEssay.find();
-    res.render("teacher", { submissions: sub });
+    res.render("teacher", { submissions: sub, token: req.query.token });
 });
 
 // TEACHER VIEW PREPROCESS
 app.post('/teacher', async(req, res) => {
-    if(isValidObjectId(req.body.essay_id))
-        res.redirect(`/teacher/view` + `?id=${req.body.essay_id}`);
-    else
+    if(isValidObjectId(req.body.essay_id)) {
+        res.redirect(url.format({
+            pathname:'/teacher/view',
+            query: {
+                'id': req.body.essay_id,
+                'document_id': req.body.googleId,
+                'token': req.body.token
+            }
+        }));
+    } else
         res.sendStatus(502);
 });
 
@@ -136,9 +134,11 @@ app.get('/student/view', async(req, res) => {
 
 app.get('/teacher/view', async(req, res) => {
     try {
+        if(req.query.token == undefined)
+            res.redirect('/');
         let found_essay = await UserEssay.findById(req.query.id);
         if(found_essay)
-            res.render('view', { essay: found_essay, user: "teacher" });
+            res.render('view', { essay: found_essay, user: "teacher", token: req.query.token });
         else
             res.sendStatus(404);
     } catch (err) {
@@ -173,27 +173,29 @@ app.post('/teacher/view', async (req, res) => {
 
 // SUBMIT ESSAY
 app.post('/student', async(req, res) => {
-    let newEssay;
     let grade = gradeEssay(req.body.content);
-    newEssay = Object.assign(req.body, {
-        name: req.body.name,
-        content: req.body.content,
-        created: new Date(),
-        inProgress: false,
-        grade: (await grade).grade,
-        incorrect: (await grade).incorrect,
-        comments: (await grade).comments
+    let essays = await UserEssay.find();
+    essays.forEach(async (essay) => {
+        if(essay.name === req.body.name) {
+            console.log("Found the essay to submit");
+            essay.grade = (await grade).grade;
+            essay.incorrect = (await grade).incorrect;
+            essay.comments = (await grade).comments;
+            essay.inProgress = false;
+            await essay.save().then((res: any) => {
+                console.log("Saved the essay");
+            }).catch((err: any) => {
+                console.log("Error while saving essay:" + err);
+            })
+            res.redirect(url.format({
+                pathname:'/student/view',
+                query: {
+                    'id': essay._id.toString(),
+                    'document_id': essay.googleId
+                }
+            }));
+        }
     });
-    let essay = new UserEssay(newEssay);
-    await essay.save().then((result: any) => {
-        console.log("Saved the essay");
-    }).catch((err: any) => {
-        console.log("Error while saving essay:" + err);
-    })
-    if(!essay.inProgress)
-        res.redirect(`/student/view` + `?id=${essay._id}`);
-    else
-        res.redirect(`/student` + `?name=${essay.name}`);
 });
 
 app.listen(port, () => {
