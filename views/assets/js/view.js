@@ -1,4 +1,4 @@
-async function deleteEssay() {
+function deleteEssay() {
     document.querySelector('.essay_del').submit();
 };
 function postComments() {
@@ -27,21 +27,11 @@ function toggleIncor() {
     })
 }
 window.onload = async () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    let id = urlParams.get('id').replaceAll('%22', '');
-    documentId = urlParams.get('document_id').replaceAll('%22', '');
     await embedDoc();
-    let inputs = document.querySelectorAll('.id');
-    inputs.forEach((input) => {
-        input.value = id;
-    });
 };
 
-let documentId;
-
 async function embedDoc() {
-    const embedUrl = `https://docs.google.com/document/d/${documentId}/preview`;
+    const embedUrl = `https://docs.google.com/document/d/${document.querySelector('.document_id').value}/preview`;
     const iframe = document.createElement('iframe');
     iframe.src = embedUrl;
     iframe.width = 735;

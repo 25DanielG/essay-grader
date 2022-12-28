@@ -21,9 +21,6 @@ setTimeout(gisLoaded, 1000);
 document.getElementById('login_button').style.visibility = 'hidden';
 document.getElementById('to_portal').style.visibility = 'hidden';
 
-/**
- * Callback after api.js is loaded.
- */
 function gapiLoaded() {
     gapi.load('client', initializeGapiClient);
     maybeEnableButtons();
@@ -33,7 +30,7 @@ function gisLoaded() {
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: '',
     });
     gisInited = true;
     maybeEnableButtons();
@@ -46,19 +43,11 @@ function maybeEnableButtons() {
     }
 }
 
-/**
- * Callback after the API client is loaded. Loads the
- * discovery doc to initialize the API.
- */
 async function initializeGapiClient() {
     try {
-        // Initialize the API client
         await gapi.client.init({
             apiKey: API_KEY,
             discoveryDocs: DISCOVERY_DOC,
-            // clientId: CLIENT_ID,
-            // scope: SCOPES,
-            // clientSecret: CLIENT_SECRET,
         }).then(function () {
             console.log("Initialized");
         });
@@ -71,14 +60,12 @@ async function initializeGapiClient() {
 }
 
 async function updateProfileImg() {
-    gapi.client.plus.people.get({
-        userId: 'me',
-    }).then((response) => {
-        const profilePictureUrl = response.result.image.url;
-        const profilePictureElement = document.querySelector('.profile-picture');
-        profilePictureElement.src = profilePictureUrl;
-    }, (error) => {
-        console.error('Error: ' + error.result.error.message);
+    gapi.client.people.people.get({
+        resourceName: 'people/me',
+        personFields: 'photos'
+    }).then(function(response) {
+        let profilePictureUrl = response.result.photos[0].url;
+        document.querySelector('.profile-picture').src = profilePictureUrl;
     });
 }
 
@@ -90,15 +77,12 @@ function handleTeacherClick() {
     handleAuthClick('teacher');
 }
 
-/**
- *  Sign in the user upon button click.
- */
 async function handleAuthClick(identity) {
     tokenClient.callback = async (resp) => {
         if (resp.error !== undefined) {
             throw (resp);
         }
-        //await updateProfileImg();
+        await updateProfileImg();
         if(identity == 'student') {
             gapi.client.people.people.get({
                 resourceName: 'people/me',
@@ -121,7 +105,7 @@ async function handleAuthClick(identity) {
                 .catch(error => console.error(error))
             });
         } else {
-            window.location.href = `http://localhost:2020/teacher?token=${gapi.client.getToken().access_token}`;
+            //window.location.href = `http://localhost:2020/teacher?token=${gapi.client.getToken().access_token}`;
         }
     };
     if (gapi.client.getToken() === null) {

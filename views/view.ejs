@@ -16,8 +16,9 @@
     </header>
     <div class="back_centered">
         <div class="text_container">
+            <input type="text" name="document_id" class="document_id" style="display: none;" value="<%= essay.googleId %>"/>
             <form class="essay_del" method="post" action="/del">
-                <input type="text" name="id" class="id" style="display: none;"/>
+                <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"/>
             </form>
             <div class="front">
                 <div class="text_div">
@@ -49,7 +50,7 @@
                         <form class="add_com" method="post" action="/<%-user%>/view">
                             <button type="button" class="submit_com" onclick="postComments()">Add Comments</button>
                             <input class="entered_comments" type="text" name="comments">
-                            <input type="text" name="id" class="id" style="display: none;">
+                            <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>">
                         </form>
                     </div>
                 <% } %>

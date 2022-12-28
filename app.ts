@@ -3,9 +3,11 @@ import url, { fileURLToPath } from 'url';
 import path from 'path';
 import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
 import { gradeEssay } from './util/grades.js';
+import router from './router.js';
 import { Feedback } from './util/type.js';
 import { OAuth2Client } from 'google-auth-library';
 import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './util/keys.js'
+import e from 'express';
 
 const googleAuthClient = new OAuth2Client(CLIENT_ID);
 const app = express();
@@ -42,40 +44,29 @@ app.get('/', async(req, res) => {
 
 // RENDER STUDENT & IN PROGRESS
 app.post('/', async(req, res) => {
-    let essays = await UserEssay.find();
-    let flag: boolean = false;
-    essays.forEach((essay) => {
-        if(essay.name === req.body.name && !flag) {
-            if(!essay.inProgress) {
-                res.redirect(url.format({
-                    pathname:'/student/view',
-                    query: {
-                        'id': essay._id.toString(),
-                        'document_id': essay.googleId
-                    }
-                }));
-            } else {
-                res.redirect(url.format({
-                    pathname:'/student',
-                    query: {
-                        'name': essay.name,
-                        'access_token': req.body.token,
-                        'document_id': essay.googleId
-                    }
-                }));
-            }
-            flag = true;
+    let essay = (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
+    if(essay) {
+        if(!essay.inProgress) {
+            res.redirect(url.format({
+                pathname:`/student/view/${essay._id.toString()}`,
+            }));
+        } else {
+            res.redirect(url.format({
+                pathname:'/student',
+                query: {
+                    'name': essay.name,
+                    'access_token': req.body.token
+                }
+            }));
         }
-    });
-    if(!flag) {
+    } else {
         let newEssay = Object.assign(req.body, {
             name: req.body.name,
             content: " ",
             created: new Date(),
             inProgress: true
         });
-        let essay = new UserEssay(newEssay);
-        await essay.save();
+        await new UserEssay(newEssay).save();
         res.redirect(url.format({
             pathname:'/student',
             query: {
@@ -84,17 +75,6 @@ app.post('/', async(req, res) => {
             }
         }));
     }
-});
-
-// UPDATE THE GOOGLE DOCUMENT ID
-app.post('/update-id', async(req, res) => {
-    let essays = await UserEssay.find();
-    essays.forEach(async (essay) => {
-        if(essay.name === req.body.name) {
-            essay.googleId = req.body.docId;
-            await essay.save();
-        }
-    });
 });
 
 // RENDER TEACHER PAGE
@@ -120,20 +100,20 @@ app.post('/teacher', async(req, res) => {
 
 // RENDER STUDENT PAGE
 app.get('/student', async(req, res) => {
-    res.render('student', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET });
+    let doc = (await UserEssay.find({ name: req.query.name }).limit(1)).at(0);
+    if(doc)
+        res.render('student', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET, essay: doc });
+    else
+        res.sendStatus(404);
 });
 
 // VIEWS
-app.get('/student/view', async(req, res) => {
-    try {
-        let found_essay = await UserEssay.findById(req.query.id);
-        if(found_essay)
-            res.render('view', { essay: found_essay, user: "student" });
-        else
-            res.sendStatus(404);
-    } catch (err) {
-        console.log("Error while finding the essay to display: " + err);
-    }
+app.get('/student/view/:id', async(req, res) => {
+    let found_essay = await UserEssay.findById(req.params.id);
+    if(found_essay)
+        res.render('view', { essay: found_essay, user: "student" });
+    else
+        res.sendStatus(404);
 });
 
 app.get('/teacher/view', async(req, res) => {
@@ -152,14 +132,8 @@ app.get('/teacher/view', async(req, res) => {
 
 // DELETE AN ESSAY
 app.post('/del', async(req, res) => {
-    let essays = await UserEssay.find();
     if(isValidObjectId(req.body.id)) {
-        for(let i = 0; i < essays.length; ++i) {
-            if(essays[i]._id == req.body.id) {
-                await UserEssay.deleteOne({_id: req.body.id});
-                break;
-            }
-        }
+        await UserEssay.findByIdAndDelete(req.body.id);
     } else
         res.sendStatus(502);
     res.redirect(`/`);
@@ -178,29 +152,26 @@ app.post('/teacher/view', async (req, res) => {
 // SUBMIT ESSAY
 app.post('/student', async(req, res) => {
     let grade = gradeEssay(req.body.content);
-    let essays = await UserEssay.find();
-    essays.forEach(async (essay) => {
-        if(essay.name === req.body.name) {
-            console.log("Found the essay to submit");
-            essay.grade = (await grade).grade;
-            essay.incorrect = (await grade).incorrect;
-            essay.comments = (await grade).comments;
-            essay.inProgress = false;
-            await essay.save().then((res: any) => {
-                console.log("Saved the essay");
-            }).catch((err: any) => {
-                console.log("Error while saving essay:" + err);
-            })
-            res.redirect(url.format({
-                pathname:'/student/view',
-                query: {
-                    'id': essay._id.toString(),
-                    'document_id': essay.googleId
-                }
-            }));
-        }
-    });
+    let essay = await (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
+    if(essay) {
+        console.log("Found the essay to submit");
+        essay.grade = (await grade).grade;
+        essay.incorrect = (await grade).incorrect;
+        essay.comments = (await grade).comments;
+        essay.inProgress = false;
+        await essay.save().then((res: any) => {
+            console.log("Saved the essay");
+        }).catch((err: any) => {
+            console.log("Error while saving essay:" + err);
+        });
+        res.redirect(url.format({
+            pathname:`/student/view/${essay._id.toString()}`
+        }));
+    } else
+        res.sendStatus(502);
 });
+
+app.use('/api', router);
 
 app.listen(port, () => {
     console.log(`Listening on port: ${port}`); 

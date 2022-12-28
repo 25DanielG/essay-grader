@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,8 +16,9 @@
         <div class="text_container">
             <form class="submission" method="post" action="/student">
                 <div class="sidebar">
-                    <input type="text" name="name" class="name" style="display: none;"></input>
-                    <input type="text" name="documentId" class="doc_id" style="display: none;"></input>
+                    <input type="text" name="name" class="name" style="display: none;" value="<%= essay.name %>"></input>
+                    <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"></input>
+                    <input type="text" name="documentId" class="doc_id" style="display: none;" value="<%= essay.googleId %>"></input>
                     <input type="text" name="content" class="content" style="display: none;"></input>
                     <div class="submit_button">
                         <a onclick="submitClicked()">Submit</a>

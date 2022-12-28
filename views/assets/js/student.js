@@ -30,7 +30,6 @@ async function submitClicked() {
         });
         essay = docText;
     });
-    let name = document.querySelector('.name').value;
     document.querySelector('.content').value = essay;
     if(essay.trim() == '')
         return;
@@ -40,17 +39,10 @@ async function submitClicked() {
 window.onload = async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    name = urlParams.get('name').replaceAll('%22', '');
     token = urlParams.get('access_token').replaceAll('%22', '');
-    if(queryString.includes('document_id')) {
-        let id = urlParams.get('document_id').replaceAll('%22', '');
-        document.querySelector('.doc_id').value = id;
-    }
-    document.querySelector('.name').value = name;
     await gapi.client.setToken({
-        'access_token': token
+        access_token: token
     });
-    await createAndEmbedDoc();
 };
 
 function gapiLoaded() {
@@ -61,25 +53,18 @@ function gisLoaded() {
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: '',
     });
 }
 
-/**
- * Callback after the API client is loaded. Loads the
- * discovery doc to initialize the API.
- */
 async function initializeGapiClient() {
     try {
-        // Initialize the API client
         await gapi.client.init({
             apiKey: API_KEY,
             discoveryDocs: DISCOVERY_DOC,
-            // clientId: CLIENT_ID,
-            // scope: SCOPES,
-            // clientSecret: CLIENT_SECRET,
-        }).then(function () {
+        }).then(async function () {
             console.log("Initialized");
+            await createAndEmbedDoc();
         });
     } catch (error) {
         console.error(error);
@@ -89,7 +74,7 @@ async function initializeGapiClient() {
 
 async function createAndEmbedDoc() {
     let documentId;
-    if(document.querySelector('.doc_id').value.trim() === '') {
+    if(!document.querySelector('.doc_id').value.trim()) {
         const fileMetadata = {
             'name': 'Essay Doc',
             'mimeType': 'application/vnd.google-apps.document'
@@ -100,13 +85,13 @@ async function createAndEmbedDoc() {
         });
         documentId = response.result.id;
         document.querySelector('.doc_id').value = documentId;
-        fetch("/update-id", {
-            method: "POST",
+        let essayId = document.querySelector('.id').value;
+        fetch(`/api/${essayId}`, {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name: document.querySelector('.name').value,
                 docId: documentId
             })
         });
@@ -118,6 +103,6 @@ async function createAndEmbedDoc() {
     iframe.width = 735;
     iframe.height = 550;
     iframe.className = 'docs_embed'
-    // window.location.href += `&document_id=${documentId}`
     document.querySelector('.front').appendChild(iframe);
+    createAndEmbedDoc = function() {};
 }

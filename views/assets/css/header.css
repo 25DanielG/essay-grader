@@ -1,5 +1,9 @@
+:root {
+  font-size: 16px;
+}
+
 .topnav {
-  background-color: #333;
+  background-color: transparent;
   overflow: hidden;
 }
 
@@ -7,9 +11,9 @@
   float: left;
   color: #f2f2f2;
   text-align: center;
-  padding: 14px 16px;
+  padding: 0.875rem 1rem;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .topnav a:hover {
@@ -18,8 +22,9 @@
 }
 
 .topnav a.active {
-  background-color: #4caf50;
+  background-color: #4285f4;
   color: white;
+  padding-bottom: 1rem;
 }
 
 .profile-container {
@@ -28,9 +33,9 @@
 }
 
 .profile-picture {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   object-fit: cover;
-  margin: 2px;
+  margin: 0.125rem;
 }
