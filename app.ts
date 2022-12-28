@@ -1,5 +1,6 @@
 import express from 'express';
-import url from 'url';
+import url, { fileURLToPath } from 'url';
+import path from 'path';
 import mongoose, { isValidObjectId, ObjectId } from 'mongoose';
 import { gradeEssay } from './util/grades.js';
 import { Feedback } from './util/type.js';
@@ -7,8 +8,10 @@ import { OAuth2Client } from 'google-auth-library';
 import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './util/keys.js'
 
 const googleAuthClient = new OAuth2Client(CLIENT_ID);
-var app = express();
+const app = express();
 const port = 2020;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -16,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('views'));
 
+mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/submissions');
 
 var usrSchema = new mongoose.Schema({
@@ -32,7 +36,7 @@ export var UserEssay = mongoose.model('UserEssay', usrSchema);
 
 // RENDER LOGIN
 app.get('/', async(req, res) => {
-    res.render('login');
+    res.render('login', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET });
     // await UserEssay.deleteMany({});
 });
 
@@ -116,7 +120,7 @@ app.post('/teacher', async(req, res) => {
 
 // RENDER STUDENT PAGE
 app.get('/student', async(req, res) => {
-    res.render('student');
+    res.render('student', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET });
 });
 
 // VIEWS

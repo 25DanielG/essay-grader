@@ -36,38 +36,6 @@
             </div>
         </div>
     </div>
-    <script>
-        function addListOption() {
-            let list_div = document.querySelector('.list');
-            list_div.innerHTML = list_div.innerHTML + ''
-                + '<a href="google.com">'
-                + '    <div class="list_item">'
-                + '        <h2>Manual Essay</h2>'
-                + '    </div>'
-                + '</a>'
-            ;
-        }
-        function redirectToView(id) {
-            if(id.trim() == '')
-                return;
-            let class_name = "redirect_view_" + id;
-            document.querySelector(`.${class_name}`).submit();
-        }
-        /*let urls = [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLxRRIURDV86yBaVi9kisZGHwcWZCS4b3Ag6syP40wfwtKk4E7nsrQWEG4HybVqGiXojw&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2hCLvVylio3q1EiP1fMwm_hWMj_K_ceqUVT-QvLmaUxaMQtKQ7171AxqHhIGCA2bTXbw&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrI1M4J743HxA1p2cdMQQ7qCi0YWaFMey7YBEuOj5XefuQbIl3fGR8QMoNpP4pFf66iUY&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbdsl98Wb6VxuBQqO5uinS16G4pDFL0a4-CeraN1AOPsitEmpqyBKq6YhX9Q1i0yYfhcU&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7pNsgh22FY5b_9_oZulosLSfRyj_1oOI3687Fvxd9NExo_4fw_LgkradcWfi8JgZ4wSs&usqp=CAU",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToUsCmLMU1uaBFveF_GVn835V8buOiNAX8PzF0PPS8fD-8GEIrjpktba-mdcdkvf88f9Q&usqp=CAU"
-        ]
-        window.onload = function setEssayImages() {
-            let list_items = document.querySelectorAll('.list_item');
-            for(let i = 0; i < list_items.length; ++i) {
-                let rand = Math.floor(Math.random() * 6);
-                list_items[i].setAttribute("style", `background-image: url("${urls[rand]}");`);
-            }
-        }*/
-    </script>
+    <script async defer src="/assets/js/teacher.js"></script>
 </body>
 </html>
