@@ -60,7 +60,7 @@ async function initializeGapiClient() {
 }
 
 async function updateProfileImg() {
-    gapi.client.people.people.get({
+    await gapi.client.people.people.get({
         resourceName: 'people/me',
         personFields: 'photos'
     }).then(function(response) {
@@ -105,7 +105,7 @@ async function handleAuthClick(identity) {
                 .catch(error => console.error(error))
             });
         } else {
-            //window.location.href = `http://localhost:2020/teacher?token=${gapi.client.getToken().access_token}`;
+            window.location.href = `http://localhost:2020/teacher?token=${gapi.client.getToken().access_token}`;
         }
     };
     if (gapi.client.getToken() === null) {

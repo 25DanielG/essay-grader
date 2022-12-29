@@ -14,6 +14,8 @@ const SCOPES = 'https://www.googleapis.com/auth/documents.readonly '
 setTimeout(gapiLoaded, 1000);
 setTimeout(gisLoaded, 1000);
 
+let limit = true;
+
 async function submitClicked() {
     let essay;
     await gapi.client.docs.documents.get({
@@ -65,6 +67,7 @@ async function initializeGapiClient() {
         }).then(async function () {
             console.log("Initialized");
             await createAndEmbedDoc();
+            await updateProfileImg();
         });
     } catch (error) {
         console.error(error);
@@ -72,8 +75,20 @@ async function initializeGapiClient() {
     }
 }
 
+async function updateProfileImg() {
+    await gapi.client.people.people.get({
+        resourceName: 'people/me',
+        personFields: 'photos'
+    }).then(function(response) {
+        let profilePictureUrl = response.result.photos[0].url;
+        document.querySelector('.profile-picture').src = profilePictureUrl;
+    });
+}
+
 async function createAndEmbedDoc() {
     let documentId;
+    if(!limit) return;
+    limit = false;
     if(!document.querySelector('.doc_id').value.trim()) {
         const fileMetadata = {
             'name': 'Essay Doc',
@@ -103,6 +118,6 @@ async function createAndEmbedDoc() {
     iframe.width = 735;
     iframe.height = 550;
     iframe.className = 'docs_embed'
+    iframe.frameBorder = '0';
     document.querySelector('.front').appendChild(iframe);
-    createAndEmbedDoc = function() {};
 }

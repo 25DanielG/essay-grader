@@ -17,9 +17,7 @@
     <div class="back_centered">
         <div class="text_container">
             <input type="text" name="document_id" class="document_id" style="display: none;" value="<%= essay.googleId %>"/>
-            <form class="essay_del" method="post" action="/del">
-                <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"/>
-            </form>
+            <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"/>
             <div class="front">
                 <div class="text_div">
                     
@@ -42,16 +40,13 @@
                             </a>
                         </div>
                         <div class="incor_info">
-                            <h2>Comments: <%=essay.comments%></h2>
+                            <h2>Comments: <%= essay.comments %></h2>
                         </div>
                     </div>
                 <% } else { %>
                     <div class="comments">
-                        <form class="add_com" method="post" action="/<%-user%>/view">
-                            <button type="button" class="submit_com" onclick="postComments()">Add Comments</button>
-                            <input class="entered_comments" type="text" name="comments">
-                            <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>">
-                        </form>
+                        <button type="button" class="submit_com" onclick="postComments()">Add Comments</button>
+                        <input class="entered_comments" type="text" name="comments">
                     </div>
                 <% } %>
             </div>

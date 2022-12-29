@@ -1,16 +1,32 @@
 function deleteEssay() {
-    document.querySelector('.essay_del').submit();
-};
+    fetch(`/api/del/${document.querySelector('.id').value}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    window.location.href = '/';
+}
+
 function postComments() {
     let comments = document.querySelector('.entered_comments').value;
     if(comments.trim() === '')
         return;
-    console.log("Submitted comment post request: " + comments);
-    document.querySelector('.add_com').submit();
+    fetch(`/api/comments/${document.querySelector('.id').value}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: {
+            comments: comments
+        }
+    });
 }
+
 function toggleCom() {
 
 }
+
 function toggleIncor() {
     document.querySelectorAll('.incor_info').forEach((element) => {
         if(element.getAttribute('style').includes('none')) {
@@ -26,6 +42,7 @@ function toggleIncor() {
         }
     })
 }
+
 window.onload = async () => {
     await embedDoc();
 };

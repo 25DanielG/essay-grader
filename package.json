@@ -5,7 +5,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "build": "tsc",
+    "start": "node out/app.js",
+    "run": "tsc && node out/app.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.15",
