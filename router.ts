@@ -1,6 +1,6 @@
 import express from 'express';
 import { isValidObjectId } from 'mongoose';
-import { UserEssay } from './app.js';
+import { UserEssay } from './util/schema.js';
 
 const router = express.Router();
 

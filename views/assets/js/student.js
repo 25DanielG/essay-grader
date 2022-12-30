@@ -14,7 +14,20 @@ const SCOPES = 'https://www.googleapis.com/auth/documents.readonly '
 setTimeout(gapiLoaded, 1000);
 setTimeout(gisLoaded, 1000);
 
-let limit = true;
+let limit = true, toggle = false;
+
+function toggleSidebar() {
+    if(toggle) {
+        document.getElementById('sidenav').style.width = '50px';
+        document.getElementById('main').style.marginLeft = '50px';
+        document.getElementById('sidenav').style.display = '';
+    } else {
+        document.getElementById('sidenav').style.width = '0px';
+        document.getElementById('main').style.marginLeft= '0px';
+        document.getElementById('sidenav').style.display = 'none';
+    }
+    toggle = !toggle;
+}
 
 async function submitClicked() {
     let essay;
@@ -45,6 +58,7 @@ window.onload = async () => {
     await gapi.client.setToken({
         access_token: token
     });
+    toggleSidebar();
 };
 
 function gapiLoaded() {
@@ -60,6 +74,8 @@ function gisLoaded() {
 }
 
 async function initializeGapiClient() {
+    if(!limit) return;
+    limit = false;
     try {
         await gapi.client.init({
             apiKey: API_KEY,
@@ -70,8 +86,8 @@ async function initializeGapiClient() {
             await updateProfileImg();
         });
     } catch (error) {
-        console.error(error);
-        alert("Error initializing gapi.client: " + error.message);
+        console.log("Error initializing gapi.client: " + error.message);
+        alert("Your Google Access Token has expired. Please log in again.");
     }
 }
 
@@ -87,8 +103,6 @@ async function updateProfileImg() {
 
 async function createAndEmbedDoc() {
     let documentId;
-    if(!limit) return;
-    limit = false;
     if(!document.querySelector('.doc_id').value.trim()) {
         const fileMetadata = {
             'name': 'Essay Doc',
@@ -115,7 +129,7 @@ async function createAndEmbedDoc() {
     const embedUrl = `https://docs.google.com/document/d/${documentId}/edit?usp=sharing`;
     const iframe = document.createElement('iframe');
     iframe.src = embedUrl;
-    iframe.width = 735;
+    iframe.width = 835;
     iframe.height = 550;
     iframe.className = 'docs_embed'
     iframe.frameBorder = '0';

@@ -14,17 +14,19 @@
   padding: 0.875rem 1rem;
   text-decoration: none;
   font-size: 1.0625rem;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 
 .topnav a.active {
   background-color: #4285f4;
   color: white;
   padding-bottom: 1rem;
+}
+
+.topnav a:hover {
+  background-color: #6a9df0;
+  color: white;
 }
 
 .profile-container {

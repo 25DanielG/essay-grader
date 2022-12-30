@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Feedback, FirstLast } from './type';
-import { UserEssay } from '../app.js';
+import { UserEssay } from './schema.js';
 import { compareTwoStrings } from 'string-similarity';
 const no_nos: Array<string> = [
     ' very ', ' really ', ' get ', ' got ', ' getting ', ' I ', ' me ', ' mine ', ' my ', ' myself ',

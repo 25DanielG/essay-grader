@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href= "/assets/css/student.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Essay Editor</title>
 </head>
 <body>
@@ -15,7 +16,7 @@
     <div class="back_centered">
         <div class="text_container">
             <form class="submission" method="post" action="/student">
-                <div class="sidebar">
+                <div class="sidebar" id="sidenav">
                     <input type="text" name="name" class="name" style="display: none;" value="<%= essay.name %>"></input>
                     <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"></input>
                     <input type="text" name="documentId" class="doc_id" style="display: none;" value="<%= essay.googleId %>"></input>
@@ -24,7 +25,8 @@
                         <a onclick="submitClicked()">Submit</a>
                     </div>
                 </div>
-                <div class="front">
+                <a class="openbtn material-icons" onclick="toggleSidebar()">view_headline</a>
+                <div class="front" id="main">
                     
                 </div>
             </form>
