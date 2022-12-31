@@ -8,8 +8,8 @@
   --radius: 4px;
   --box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   --font-family: sans-serif;
-  --font-size: 16px;
-  --icon-font-size: 16px;
+  --font-size: 1rem;
+  --icon-font-size: 1rem;
   --padding: 40px;
   --button-padding: 10px 20px;
   --button-radius: 4px;
@@ -43,7 +43,7 @@ header {
 }
 
 .text_container {
-  width: 1000px;
+  width: 1100px;
   background-color: var(--text-color);
   padding: var(--padding);
   border-radius: var(--radius);
@@ -77,9 +77,15 @@ header {
 .front iframe {
   transform: scale(var(--iframe-scale));
   padding: var(--padding);
-  float: none;
+  float: left;
   margin: auto;
   position: relative;
+  margin-left: 50px;
+}
+
+.open_container {
+  position: relative;
+  float: left;
 }
 
 a {

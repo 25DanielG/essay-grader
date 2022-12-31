@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/assets/css/teacher.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <title>Teacher Portal</title>
 </head>
 
@@ -19,21 +20,29 @@
             <div class="label">
                 <h2 class="teacher_writing">Teacher Portal</h2>
             </div>
-            <div class="list" onload="addEssays()">
-                <% submissions.forEach((essay) => { %>
-                    <% if(essay.inProgress != true) { %>
-                        <form class="redirect_view_<%= essay._id %>" action="/teacher" method="post">
-                            <input name="essay_id" type="text" style="display: none;" value="<%= essay._id %>">
-                            <input name="googleId" type="text" style="display: none;" value="<%= essay.googleId %>">
-                            <input name="token" type="text" style="display: none;" value="<%= token %>">
-                            <a class="list_item_a">
-                                <div class="list_item" onclick="redirectToView('<%- essay._id %>')">
-                                    <h2> <%= essay.name %> </h2>
-                                </div>
-                            </a>
-                        </form>
-                    <% } %>
-                <% }); %>
+            <div class="list">
+                <table>
+                    <% submissions.forEach((essay) => { %>
+                        <% if(essay.inProgress != true) { %>
+                            <tr>
+                                <td>
+                                    <form class="redirect_view_<%= essay._id %>" action="/teacher" method="post">
+                                        <input name="essay_id" type="text" style="display: none;" value="<%= essay._id %>">
+                                        <input name="googleId" type="text" style="display: none;" value="<%= essay.googleId %>">
+                                        <input name="token" type="text" style="display: none;" value="<%= token %>">
+                                        <div class="list_item">
+                                            <h2> <%= essay.name %> </h2>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    <button class="delete fa" onclick="deleteEssay('<%- essay._id %>')">&#xf014;</button>
+                                    <button class="view" onclick="redirectToView('<%- essay._id %>')">View</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% }); %>
+                </table>
             </div>
         </div>
     </div>

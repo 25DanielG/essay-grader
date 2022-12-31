@@ -1,7 +1,7 @@
 import express from 'express';
 import url, { fileURLToPath } from 'url';
 import path from 'path';
-import mongoose, { isValidObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import { OAuth2Client } from 'google-auth-library';
 import { gradeEssay } from './util/grades.js';
 import router from './router.js';
@@ -23,13 +23,11 @@ app.use(express.static('views'));
 mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/submissions');
 
-// RENDER LOGIN
 app.get('/', async(req, res) => {
     res.render('login', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET });
-    await UserEssay.deleteMany({});
+    // await UserEssay.deleteMany({});
 });
 
-// RENDER STUDENT & IN PROGRESS
 app.post('/', async(req, res) => {
     let essay = (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
     if(essay) {
@@ -64,32 +62,26 @@ app.post('/', async(req, res) => {
     }
 });
 
-// RENDER TEACHER PAGE
 app.get('/teacher', async(req, res) => {
-    let sub = await UserEssay.find();
+    let essays = await UserEssay.find();
     res.render('teacher', {
-        submissions: sub,
+        submissions: essays,
         token: req.query.token,
         API_KEY: API_KEY,
         CLIENT_ID: CLIENT_ID,
-        CLIENT_SECRET: CLIENT_SECRET
+        CLIENT_SECRET: CLIENT_SECRET,
     });
 });
 
-// TEACHER VIEW PREPROCESS
 app.post('/teacher', async(req, res) => {
-    if(isValidObjectId(req.body.essay_id)) {
-        res.redirect(url.format({
-            pathname:`/teacher/view/${req.body.essay_id}`,
-            query: {
-                'token': req.body.token
-            }
-        }));
-    } else
-        res.sendStatus(502);
+    res.redirect(url.format({
+        pathname:`/teacher/view/${req.body.essay_id}`,
+        query: {
+            'token': req.body.token
+        }
+    }));
 });
 
-// RENDER STUDENT PAGE
 app.get('/student', async(req, res) => {
     let doc = (await UserEssay.find({ name: req.query.name }).limit(1)).at(0);
     if(doc)
@@ -98,7 +90,6 @@ app.get('/student', async(req, res) => {
         res.sendStatus(404);
 });
 
-// VIEWS
 app.get('/student/view/:id', async(req, res) => {
     let found_essay = await UserEssay.findById(req.params.id);
     if(found_essay)
@@ -117,25 +108,26 @@ app.get('/teacher/view/:id', async(req, res) => {
         res.sendStatus(404);
 });
 
-// SUBMIT ESSAY
 app.post('/student', async(req, res) => {
     let grade = gradeEssay(req.body.content);
     let essay = (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
-    if(essay) {
-        essay.grade = (await grade).grade;
-        essay.incorrect = (await grade).incorrect;
-        essay.comments = (await grade).comments;
-        essay.inProgress = false;
-        await essay.save().then((res) => {
-            console.log("Saved the essay");
-        }).catch((err) => {
-            console.log("Error while saving essay:" + err);
-        });
-        res.redirect(url.format({
-            pathname:`/student/view/${essay._id.toString()}`
-        }));
-    } else
-        res.sendStatus(502);
+    await UserEssay.updateOne({ name: req.body.name }, 
+    { 
+        $set: { 
+            grade: (await grade).grade,
+            incorrect: (await grade).incorrect,
+            comments: (await grade).comments,
+            inProgress: false,
+            content: req.body.content
+        }
+    }).then((res) => {
+        console.log("Saved the essay");
+    }).catch((err) => {
+        console.log("Error while saving essay:" + err);
+    });
+    res.redirect(url.format({
+        pathname:`/student/view/${essay._id.toString()}`
+    }));
 });
 
 app.use('/api', router);

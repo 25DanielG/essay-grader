@@ -14,6 +14,8 @@ const SCOPES = 'https://www.googleapis.com/auth/documents.readonly '
 setTimeout(gapiLoaded, 1000);
 setTimeout(gisLoaded, 1000);
 
+let limit = true;
+
 function addListOption() {
     let list_div = document.querySelector('.list');
     list_div.innerHTML = list_div.innerHTML + ''
@@ -54,6 +56,8 @@ function gisLoaded() {
 }
 
 async function initializeGapiClient() {
+    if(!limit) return;
+    limit = false;
     try {
         await gapi.client.init({
             apiKey: API_KEY,
@@ -63,8 +67,8 @@ async function initializeGapiClient() {
             await updateProfileImg();
         });
     } catch (error) {
-        console.error(error);
-        alert("Error initializing gapi.client: " + error.message);
+        console.log("Error initializing gapi.client: " + error.message);
+        alert("Your Google Access Token has expired. Please log in again.");
     }
 }
 
@@ -76,4 +80,14 @@ async function updateProfileImg() {
         let profilePictureUrl = response.result.photos[0].url;
         document.querySelector('.profile-picture').src = profilePictureUrl;
     });
+}
+
+function deleteEssay(essayId) {
+    fetch(`/api/del/${essayId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    window.location.reload();
 }
