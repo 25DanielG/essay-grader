@@ -14,19 +14,10 @@ const SCOPES = 'https://www.googleapis.com/auth/documents.readonly '
 setTimeout(gapiLoaded, 1000);
 setTimeout(gisLoaded, 1000);
 
-let limit = true, toggle = false;
+let limit = true;
 
 function toggleSidebar() {
-    if(toggle) {
-        document.getElementById('sidenav').style.width = '50px';
-        document.getElementById('main').style.marginLeft = '50px';
-        document.getElementById('sidenav').style.display = '';
-    } else {
-        document.getElementById('sidenav').style.width = '0px';
-        document.getElementById('main').style.marginLeft= '0px';
-        document.getElementById('sidenav').style.display = 'none';
-    }
-    toggle = !toggle;
+    document.getElementById('sidenav').classList.toggle('sidebar-open');
 }
 
 async function submitClicked() {
@@ -58,7 +49,6 @@ window.onload = async () => {
     await gapi.client.setToken({
         access_token: token
     });
-    toggleSidebar();
 };
 
 function gapiLoaded() {

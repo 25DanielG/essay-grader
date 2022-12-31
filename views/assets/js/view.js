@@ -56,3 +56,7 @@ async function embedDoc() {
     iframe.className = 'docs_embed'
     document.querySelector('.text_div').appendChild(iframe);
 }
+
+function toggleSidebar() {
+    document.getElementById('sidenav').classList.toggle('sidebar-open');
+}

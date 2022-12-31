@@ -19,7 +19,17 @@
             <input type="text" name="document_id" class="document_id" style="display: none;" value="<%= essay.googleId %>"/>
             <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"/>
             <div class="front">
-                <div class="text_div">
+                <div class="sidebar" id="sidenav">
+                    <a>Show Incorrect</a>
+                    <pre></pre>
+                    <% if(user == "teacher") { %>
+                        <a>Add Comments</a>
+                    <% } %>
+                </div>
+                <div class="open_container">
+                    <a class="openbtn material-icons" onclick="toggleSidebar()">view_headline</a>
+                </div>
+                <div class="text_div" id="main">
                     
                 </div>
                 <% if(user === "student") { %>

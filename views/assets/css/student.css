@@ -14,7 +14,7 @@
   --button-padding: 10px 20px;
   --button-radius: 4px;
   --iframe-scale: 110%;
-  --sidebar-width: 100px;
+  --sidebar-width: 150px;
   --main-width: 600px;
 }
 
@@ -38,7 +38,7 @@ header {
 }
 
 #main {
-  transition: margin-left .5s;
+  transition: margin-left 0.5s;
   padding: 16px;
 }
 
@@ -55,15 +55,15 @@ header {
 }
 
 .sidebar {
-  width: var(--sidebar-width);
-  padding: var(--padding);
   border-right: 1px solid var(--border-color);
   text-align: center;
   float: left;
   top: auto;
   position: relative;
   overflow-x: hidden;
-  transition: 0.5s;
+  transition: all 0.5s ease;
+  width: 0px;
+  max-width: 0px;
 }
 
 .front {
@@ -103,11 +103,16 @@ a {
 
 .sidebar a {
   transition: 0.3s;
-  display: inline-block;
+  display: inline-flex;
   text-align: center;
-  margin-left: -40px;
+  float: none;
 }
 
 .sidebar a:hover {
   background-color: var(--link-hover-color);
+}
+
+.sidebar-open {
+  width: var(--sidebar-width) !important;
+  max-width: var(--sidebar-width) !important;
 }
