@@ -2,6 +2,7 @@
   cursor: pointer;
   float: right !important;
   background-color: #ff0000 !important;
+  position: relative;
   font-size: 1.25rem !important;
 }
 
@@ -9,6 +10,23 @@
   background-color: #ff3e3e !important;
 }
 
-.info {
-  text-align-last: center !important;
+.header_info {
+  margin: 0;
+  padding: none !important;
+}
+
+.header_info {
+  position: relative !important;
+  color: #000 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  float: none !important;
+  left: -45px;
+  font: bold;
+}
+
+.header_info:hover {
+  color: #000;
+  background-color: transparent;
 }

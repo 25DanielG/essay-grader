@@ -57,7 +57,7 @@ async function checkPlag(essay: string) {
             continue;
         if(compareTwoStrings(others[i].content, essay) > 0.75) {
             ret.grade += 100;
-            ret.incorrect.push(`Automatic 0 for plagiarizing ${others[i].name} `);
+            ret.incorrect.push(`Automatic 0 for plagiarizing ${others[i].name}`);
             break;
         }
     }
@@ -73,7 +73,7 @@ function startWithSame(out_words: FirstLast[]) {
         for(let j = i + 1; j < out_words.length && j < i + 3; ++j) {
             if(out_words[i].first.toLowerCase() === out_words[j].first.toLowerCase()) {
                 ret.grade += 3;
-                ret.incorrect.push(`3 points off for sentences ${i + 1} and ${j + 1} starting with the same word `);
+                ret.incorrect.push(`Sentences ${i + 1} and ${j + 1} start with the same word (-3%)`);
             }
         }
     }
@@ -90,7 +90,7 @@ function endInPrep(outer_words: FirstLast[]) {
         var regex = new RegExp('\n' + set.last.toLowerCase() +'\n');
         if(content.toString('utf-8').match(regex)) {
             ret.grade += 5;
-            ret.incorrect.push(`5 points off ending sentence with "${set.last}" `);
+            ret.incorrect.push(`Sentence ending with "${set.last}" (-5%)`);
         }
     });
     return ret;
@@ -117,7 +117,7 @@ function checkMispelling(eachWord: String[]) {
         var regex = new RegExp('\n' + eachWord[i].toLowerCase().trim() +'\n');
         if(!content.toString('utf-8').match(regex)) {
             ++ret.grade;
-            ret.incorrect.push(`1 point off for typo: "${eachWord[i]}" `);
+            ret.incorrect.push(`Typo: "${eachWord[i]}" (-1%)`);
         }
     }
     return ret;
@@ -131,7 +131,7 @@ function checkNoNos(eachWord: String[]) {
     for(let i = 0; i < eachWord.length; ++i) {
         if(no_nos.indexOf(' ' + eachWord[i] + ' ') > -1) {
             ++ret.grade;
-            ret.incorrect.push(`1 point off for using "${eachWord[i]}" `);
+            ret.incorrect.push(`Using a banned word: "${eachWord[i]}" (-1%)`);
         }
     }
     return ret;
@@ -144,7 +144,7 @@ function checkLength(eachWord: String[]) {
     }
     if(eachWord.length < 500 || eachWord.length > 1000) {
         ret.grade += 50;
-        ret.incorrect.push(`50 points off for word count of ${eachWord.length} not inside 500-1000 `);
+        ret.incorrect.push(`Word count of ${eachWord.length} not inside 500-1000 (-50%)`);
     }
     return ret;
 }

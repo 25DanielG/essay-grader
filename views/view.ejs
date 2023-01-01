@@ -15,50 +15,52 @@
         <%- include('./partials/view_header'); %>
     </header>
     <div class="back_centered">
+        <div class="card">
+            <input type="radio" name="popup" value="open" id="popup-open" class="popup-radio" style="display: none;"/>
+            <div class="popup">
+                <label class="popup-label overlay">
+                    <input type="radio" name="popup" value="close" class="popup-radio"/>
+                </label>
+            <div class="content">
+                <h2>Add Teacher Comments</h2>
+                <label class="popup-label close-btn">
+                    <input type="radio" name="popup" value="close" class="popup-radio"/>
+                </label>
+                <form class="submit_comments" action="/api/comments/<%= essay._id %>" method="post" onkeydown="return event.key != 'Enter';">
+                    <input type="text" name="comments" class="input_comments"/>
+                    <pre></pre>
+                    <a class="submit_a_comments"><button type="submit">Submit</button></a>
+                </form>
+            </div>
+        </div>
         <div class="text_container">
             <input type="text" name="document_id" class="document_id" style="display: none;" value="<%= essay.googleId %>"/>
             <input type="text" name="id" class="id" style="display: none;" value="<%= essay._id %>"/>
             <div class="front">
                 <div class="sidebar" id="sidenav">
-                    <a>Show Incorrect</a>
                     <pre></pre>
+                    <a onclick="turnFullScreen()">Preview Essay</a>
                     <% if(user == "teacher") { %>
-                        <a>Add Comments</a>
+                        <pre></pre>
+                        <a onclick="openPopup()">Add Comments</a>
                     <% } %>
                 </div>
                 <div class="open_container">
                     <a class="openbtn material-icons" onclick="toggleSidebar()">view_headline</a>
                 </div>
-                <div class="text_div" id="main">
-                    
+                <div class="essay_container" id="main">
+                    <div class="text_div">
+
+                    </div>
+                    <div class="student_info">
+                        <h3>Comments:</h3>
+                        <p><%= essay.comments %></p>
+                        <h3>Errors:</h3>
+                        <% essay.incorrect.forEach((error) => { %>
+                            <p>  - <%= error %></p>
+                        <% }) %>
+                    </div>
                 </div>
-                <% if(user === "student") { %>
-                    <div class="side_scroll">
-                        <div class="score_info">
-                            <a onclick="toggleIncor()">
-                                <h2 class="expand_incor"><i class="material-icons" style="font-size: 14px;">&#xe5c5;</i>Show Incorrect</h2>
-                            </a>
-                        </div>
-                        <% for(let i = 0; i < essay.incorrect.length; ++i) { %>
-                            <div class="incor_info" style="display: none;">
-                                <h2><%=essay.incorrect[i]%></h2>
-                            </div>
-                        <% } %>
-                        <div class="score_info">
-                            <a onclick="toggleCom()">
-                                <h2 class="expand_com"><i class="material-icons" style="font-size: 14px;">&#xe5c5;</i>Show Incorrect</h2>
-                            </a>
-                        </div>
-                        <div class="incor_info">
-                            <h2>Comments: <%= essay.comments %></h2>
-                        </div>
-                    </div>
-                <% } else { %>
-                    <div class="comments">
-                        <button type="button" class="submit_com" onclick="postComments()">Add Comments</button>
-                        <input class="entered_comments" type="text" name="comments">
-                    </div>
-                <% } %>
             </div>
         </div>
     </div>

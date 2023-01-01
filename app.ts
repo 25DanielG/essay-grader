@@ -76,9 +76,9 @@ app.get('/teacher', async(req, res) => {
 app.post('/teacher', async(req, res) => {
     res.redirect(url.format({
         pathname:`/teacher/view/${req.body.essay_id}`,
-        query: {
+        /* query: {
             'token': req.body.token
-        }
+        } */
     }));
 });
 
@@ -99,8 +99,8 @@ app.get('/student/view/:id', async(req, res) => {
 });
 
 app.get('/teacher/view/:id', async(req, res) => {
-    if(req.query.token == undefined)
-        res.redirect('/');
+    /* if(req.query.token == undefined)
+        res.redirect('/'); */
     let found_essay = await UserEssay.findById(req.params.id);
     if(found_essay)
         res.render('view', { essay: found_essay, user: "teacher", token: req.query.token });

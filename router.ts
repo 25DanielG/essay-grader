@@ -1,4 +1,5 @@
 import express from 'express';
+import url from 'url';
 import { isValidObjectId } from 'mongoose';
 import { UserEssay } from './util/schema.js';
 
@@ -23,7 +24,9 @@ router.delete('/del/:id', async(req, res) => {
 router.post('/comments/:id', async (req, res) => {
     if (isValidObjectId(req.params.id)) {
         await UserEssay.updateOne({ _id: req.params.id }, { $set: { comments: req.body.comments } });
-        res.sendStatus(200);
+        res.redirect(url.format({
+            pathname:`/teacher/view/${req.params.id}`
+        }));
     } else {
         res.sendStatus(502);
     }

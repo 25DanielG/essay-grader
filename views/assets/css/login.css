@@ -1,5 +1,10 @@
 :root {
   font-size: 1rem;
+  --padding: 40px;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -9,7 +14,7 @@ body {
 }
 
 header {
-  padding: 20px 0;
+  padding: var(--padding);
   text-align: center;
   background-color: #333;
   color: #fff;

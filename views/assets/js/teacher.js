@@ -89,5 +89,5 @@ function deleteEssay(essayId) {
             "Content-Type": "application/json"
         }
     });
-    window.location.reload();
+    setTimeout(window.location.reload(), 1000);
 }

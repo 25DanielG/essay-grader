@@ -1,3 +1,7 @@
+:root {
+  --padding: 40px;
+}
+
 body,
 h2,
 table,
@@ -12,6 +16,10 @@ button {
   box-sizing: border-box;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   width: 100%;
   min-height: 100%;
@@ -22,7 +30,7 @@ body {
 }
 
 header {
-  padding: 20px 0;
+  padding: var(--padding);
   text-align: center;
   background-color: #333;
   color: #fff;

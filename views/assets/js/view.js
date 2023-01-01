@@ -1,3 +1,25 @@
+if(document.addEventListener) {
+    document.addEventListener('fullscreenchange', unFullScreen, false);
+    document.addEventListener('mozfullscreenchange', unFullScreen, false);
+    document.addEventListener('MSFullscreenChange', unFullScreen, false);
+    document.addEventListener('webkitfullscreenchange', unFullScreen, false);
+}
+
+function unFullScreen() {
+    if(!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        window.location.reload();
+    }
+}
+
+function turnFullScreen() {
+    document.getElementsByTagName('iframe')[0].className = 'fullScreen';
+    let element = document.body;
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+    if(requestMethod) {
+        requestMethod.call(element);
+    }
+}
+
 function deleteEssay() {
     fetch(`/api/del/${document.querySelector('.id').value}`, {
         method: "DELETE",
@@ -8,23 +30,17 @@ function deleteEssay() {
     window.location.href = '/';
 }
 
-function postComments() {
-    let comments = document.querySelector('.entered_comments').value;
-    if(comments.trim() === '')
-        return;
-    fetch(`/api/comments/${document.querySelector('.id').value}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: {
-            comments: comments
-        }
-    });
+function openPopup() {
+    document.querySelector('#popup-open').click();
 }
 
-function toggleCom() {
-
+function turnFullScreen() {
+    document.getElementsByTagName('iframe')[0].className = 'fullScreen';
+    let element = document.body;
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+    if(requestMethod) {
+        requestMethod.call(element);
+    }
 }
 
 function toggleIncor() {

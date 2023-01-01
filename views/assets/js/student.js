@@ -122,6 +122,5 @@ async function createAndEmbedDoc() {
     iframe.width = 835;
     iframe.height = 550;
     iframe.className = 'docs_embed'
-    iframe.frameBorder = '0';
     document.querySelector('.front').appendChild(iframe);
 }
