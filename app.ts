@@ -1,18 +1,20 @@
 import express from 'express';
 import url, { fileURLToPath } from 'url';
 import path from 'path';
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { OAuth2Client } from 'google-auth-library';
 import { gradeEssay } from './util/grades.js';
 import router from './router.js';
-import { API_KEY, CLIENT_ID, CLIENT_SECRET } from './util/keys.js';
 import { UserEssay } from './util/schema.js';
 
-const googleAuthClient = new OAuth2Client(CLIENT_ID);
+const googleAuthClient = new OAuth2Client(process.env.CLIENT_ID);
 const app = express();
 const port = 2020;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -24,7 +26,7 @@ mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/submissions');
 
 app.get('/', async(req, res) => {
-    res.render('login', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET });
+    res.render('login', { API_KEY: process.env.API_KEY, CLIENT_ID: process.env.CLIENT_ID, CLIENT_SECRET: process.env.CLIENT_SECRET });
     // await UserEssay.deleteMany({});
 });
 
@@ -67,9 +69,9 @@ app.get('/teacher', async(req, res) => {
     res.render('teacher', {
         submissions: essays,
         token: req.query.token,
-        API_KEY: API_KEY,
-        CLIENT_ID: CLIENT_ID,
-        CLIENT_SECRET: CLIENT_SECRET,
+        API_KEY: process.env.API_KEY,
+        CLIENT_ID: process.env.CLIENT_ID,
+        CLIENT_SECRET: process.env.CLIENT_SECRET,
     });
 });
 
@@ -85,7 +87,7 @@ app.post('/teacher', async(req, res) => {
 app.get('/student', async(req, res) => {
     let doc = (await UserEssay.find({ name: req.query.name }).limit(1)).at(0);
     if(doc)
-        res.render('student', { API_KEY: API_KEY, CLIENT_ID: CLIENT_ID, CLIENT_SECRET: CLIENT_SECRET, essay: doc });
+        res.render('student', { API_KEY: process.env.API_KEY, CLIENT_ID: process.env.CLIENT_ID, CLIENT_SECRET: process.env.CLIENT_SECRET, essay: doc });
     else
         res.sendStatus(404);
 });

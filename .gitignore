@@ -1,3 +1,4 @@
 node_modules
 /util/keys.ts
 out
+.env
