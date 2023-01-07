@@ -31,7 +31,8 @@ app.get('/', async(req, res) => {
 });
 
 app.post('/', async(req, res) => {
-    let essay = (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
+    let essays = await UserEssay.find({ name: req.body.name });
+    let essay = essays ? essays[0] : undefined;
     if(essay) {
         if(!essay.inProgress) {
             res.redirect(url.format({
@@ -85,7 +86,8 @@ app.post('/teacher', async(req, res) => {
 });
 
 app.get('/student', async(req, res) => {
-    let doc = (await UserEssay.find({ name: req.query.name }).limit(1)).at(0);
+    let docs = await UserEssay.find({ name: req.query.name });
+    let doc = docs ? docs[0] : undefined;
     if(doc)
         res.render('student', { API_KEY: process.env.API_KEY, CLIENT_ID: process.env.CLIENT_ID, CLIENT_SECRET: process.env.CLIENT_SECRET, essay: doc });
     else
@@ -112,7 +114,8 @@ app.get('/teacher/view/:id', async(req, res) => {
 
 app.post('/student', async(req, res) => {
     let grade = gradeEssay(req.body.content);
-    let essay = (await UserEssay.find({ name: req.body.name }).limit(1)).at(0);
+    let essays = await UserEssay.find({ name: req.body.name });
+    let essay = essays ? essays[0] : undefined;
     await UserEssay.updateOne({ name: req.body.name }, 
     { 
         $set: { 
